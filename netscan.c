@@ -20,6 +20,8 @@ int netscan(){
 }
 
 char** getNetworks(){
+
+	//geef hier enkel de netwerken die beginnen met laadpaal, de andere worden genegeerd. 
 	int aantal_netwerken, i;
 	FILE* fr;
 	char line[80], ESSID[12];

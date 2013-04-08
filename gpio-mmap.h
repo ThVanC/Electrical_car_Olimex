@@ -5,6 +5,9 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+#ifndef GPIO_MMAP_H
+#define GPIO_MMAP_H
+
 #define GPIO_BASE 0x80018000
 #define GPIO_WRITE_PIN(gpio,value) GPIO_WRITE((gpio)>>5, (gpio)&31, value)
 #define GPIO_WRITE(bank,pin,value) (gpio_mmap[0x140+((bank)<<2)+((value)?1:2)] = 1<<(pin))
@@ -131,3 +134,5 @@ void gpio_eigen_output(int bank, int pin){
 	//printf("%o%o%o%o%o%o%o%o%o%o%o%o%o%o%o%o%o%o%o%o%o%o%o%o%o%o%o%o%o%o%o%o\n",gpio_mmap[index],gpio_mmap[index+1],gpio_mmap[index+2],gpio_mmap[index+3],gpio_mmap[index+4],gpio_mmap[index+5],gpio_mmap[index+6],gpio_mmap[index+7],gpio_mmap[index+8],gpio_mmap[index+9],gpio_mmap[index+9],gpio_mmap[index+10],gpio_mmap[index+11],gpio_mmap[index+12],gpio_mmap[index+13],gpio_mmap[index+14],gpio_mmap[index+15],gpio_mmap[index+16],gpio_mmap[index+17],gpio_mmap[index+18],gpio_mmap[index+19],gpio_mmap[index+20],gpio_mmap[index+21],gpio_mmap[index+22],gpio_mmap[index+23],gpio_mmap[index+24],gpio_mmap[index+25],gpio_mmap[index+26],gpio_mmap[index+27],gpio_mmap[index+28],gpio_mmap[index+29],gpio_mmap[index+30],gpio_mmap[index+31]);
 	*/
 }
+
+#endif

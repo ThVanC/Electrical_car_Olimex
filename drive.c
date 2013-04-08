@@ -57,8 +57,9 @@ int speed(int s){
 	int waarde;
 	if(s < MINIMALE_SNELHEID )
 		waarde = MINIMALE_SNELHEID;
-	if(s > MAXIMALE_SNELHEID )
+	else if(s > MAXIMALE_SNELHEID )
 		waarde = MAXIMALE_SNELHEID;
+	else waarde = s;
    // Set the duty cycle
    imx233_wr(HW_PWM_ACTIVE1, 0x012c0000);
    
