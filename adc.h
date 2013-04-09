@@ -6,6 +6,7 @@ int initLRADC1();
 
 // hier gaan we de waarde uitlezen. Je moet wel aangeven uit welke ADC je gaat lezen. 
 // De chip heeft namelijk 12 kanalen die allemaal over 1 multiplexer komen. Dus je kan er maar 1 gelijktijdig gebruiken.
-int read(int number);
+int readLRADC0();
+int readLRADC1();
 
 #endif
