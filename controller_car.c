@@ -1,12 +1,9 @@
 #include<stdio.h>
+#include "controller_car.h"
 
 #ifndef CONTROLLER_CAR
 #define CONTROLLER_CAR
 
-int voltage;//De spanning over de batterij
-int state_of_charge;//De batterijstatus uitgedrukt in het aantal procent
-int temperature;
-int max_temp=50;//de default maximum temperatuur van de wagen
 
 int getVoltage(){
 	return voltage;
@@ -38,12 +35,6 @@ void setTemperature(int i){
 		return;
 	}
 }
-
-int getTemperature(){
-	return temperature;
-}
-
-
 
 void alarm(int code){
 	//afhankelijk van de alarmcode (hoe dringend het is) moet er een functie worden opgeroepen die hierop anticipeerd.
