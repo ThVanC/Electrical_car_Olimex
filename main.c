@@ -1,6 +1,9 @@
 #include <pthread.h>
 #include <semaphore.h>
 #include "meten.h"
+#include "controller_car.h"
+#include "drive.h"
+#include "client.h"
 
 void main(){
 	//niet te vergeten bij het compilen in linux: gcc mai.c -o main -l pthread 
@@ -8,7 +11,8 @@ void main(){
 	pthread_t draad;
 	int pthread_create(&draad,NULL,*meting(), NULL);
 	int pthread_create(&draad,NULL,*client(), NULL);
-	int pthread_create(&draad,NULL,*meting(), NULL);
+	int pthread_create(&draad,NULL,*initDrive(), NULL);
+	return;
 	//int pthread_create(pthread_t * pth, pthread_attr_t *attr, void* (*function), void * arg);
 	
 
