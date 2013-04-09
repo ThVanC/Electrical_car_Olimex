@@ -15,6 +15,7 @@ int initDrive(){
    imx233_wr(HW_PINCTRL_MUXSEL3_CLR, 0x00f00000);
    
 	forward();
+	drive();
 }
 
 int forward(){
@@ -68,6 +69,9 @@ int speed(int s){
    
    // Enable the PWM output
    imx233_wr(HW_PWM_CTRL_SET, 0x06000001);
+}
+
+void drive(){
 }
 
 #endif
