@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "NiMH.h"
 #include "LiPo.h"
+#include <math.h>
 
 int init(){
 	gpio_output(2,27);
@@ -40,9 +41,20 @@ int isCharging(){
 }
 
 void setCurrent(int i){
-	//hier wachten we nog even mee.
-	//de stroom moet hier omgezet worden naar een spanning en deze spanning moet omgezet worden in een bitrij. 
-	//Die bitrij sturen we via i²c door naar onze DAC. MCP4725
+	current=i;
+}
+
+void convertCurrent(){
+	float V_ADC=0.0; //in mV
+	int bits_geheel;
+	float V_bit=5000.0/(pow(2.0,12));//in mV
+
+	//spanning in mV
+	V_ADC=2500+(current*0.1);
+	bits_geheel=V_ADC/V_bit;
+
+	//bits_geheel moet nog omgezet worden naar een bitrij
+	//deze bitrij moeten we dan ofwel als output geven ofwel onder een variabele steken in het h-bestand
 }
 
 void setBatterijType(int v){

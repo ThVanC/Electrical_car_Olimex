@@ -22,6 +22,7 @@ int isCharging();
 
 //we geven een stroom door
 void setCurrent(int i);
+void convertCurrent();
 
 void setBatterijType(int v);
 char* getBatterijType();
