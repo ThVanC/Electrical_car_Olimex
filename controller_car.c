@@ -16,6 +16,14 @@ int getTemperature(){
 	return temperature;
 }
 
+int getloadfactor(){
+	return load;
+}
+
+int setloadfactor(int factor){
+	load=factor;
+}
+
 void setTemperature(int i){
 	temperature=i;
 	if(i>max_temp){
