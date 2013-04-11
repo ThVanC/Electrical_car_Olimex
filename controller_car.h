@@ -23,8 +23,8 @@ int getTemperature();
 void setTemperature(int i);
 void setMaxTemperature(int i);
 
-int getloadfactor();
-void setloadfactor(int factor);
+int getLoadFactor();
+void setLoadFactor(int factor);
 
 void alarm(int code);
 
