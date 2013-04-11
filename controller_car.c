@@ -16,11 +16,11 @@ int getTemperature(){
 	return temperature;
 }
 
-int getloadfactor(){
+int getLoadFactor(){
 	return load;
 }
 
-int setloadfactor(int factor){
+int setLoadFactor(int factor){
 	load=factor;
 }
 
