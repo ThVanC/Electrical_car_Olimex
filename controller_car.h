@@ -26,6 +26,9 @@ void setMaxTemperature(int i);
 int getLoadFactor();
 void setLoadFactor(int factor);
 
+int getStateOfCharge();
+void setStateOfCharge(int i);
+
 void alarm(int code);
 
 #endif
