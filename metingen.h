@@ -9,7 +9,7 @@ int measureV();
 
 //stroommeting: LRADC0 pin33
 //uitgedrukt in mA
-int measureC();
+int measureI();
 
 //temperatuursmeting
 //uitgedrukt in °C
