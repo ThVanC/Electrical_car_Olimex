@@ -4,15 +4,15 @@
 #ifndef DRIVE
 #define DRIVE
 
-#define MINIMALE_SNELHEID 5
+#define MINIMALE_SNELHEID 0
 #define MAXIMALE_SNELHEID 20
 
 //hier moeten de periode, de (in)active en de periode deler nog aangepast worden.
 
 int initDrive(){
-	   // Change the function of the processor pins
-	//deze zet pinnen 26 en 27 op bank 1 op pwm0 en pwm1.
-   imx233_wr(HW_PINCTRL_MUXSEL3_CLR, 0x00f00000);
+	// Change the function of the processor pins
+	// deze zet pinnen 26 en 27 op bank 1 op pwm0 en pwm1.
+	imx233_wr(HW_PINCTRL_MUXSEL3_CLR, 0x00f00000);
    
 	forward();
 	speed(0);
@@ -71,7 +71,7 @@ int speed(int s){
 	imx233_wr(HW_PWM_ACTIVE0, tijd);
    
 	// Set the period
-	imx233_wr(HW_PWM_PERIOD0, 0x000b7530);
+	imx233_wr(HW_PWM_PERIOD0, 0x004b7530);
    
 	// Enable the PWM output
 	imx233_wr(HW_PWM_CTRL_SET, 0x06000001);
