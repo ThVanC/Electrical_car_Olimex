@@ -1,6 +1,5 @@
 #include "metingen.h"
 #include "adc.h"
-#include "math.h"
 
 int initMeasurements(){
 	initLRADC0();
