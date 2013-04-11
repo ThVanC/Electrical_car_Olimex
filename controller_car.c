@@ -24,6 +24,14 @@ int setLoadFactor(int factor){
 	load=factor;
 }
 
+int getStateOfCharge(){
+	return state_of_charge;
+}
+
+void setStateOfCharge(int i){
+	state_of_charge=i;
+}
+
 void setTemperature(int i){
 	temperature=i;
 	if(i>max_temp){
