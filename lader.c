@@ -45,6 +45,7 @@ void setCurrent(int i){
 }
 
 void convertCurrent(){
+	//gebruik altijd een positieve stroom, op of ontladen is via relais 
 	float V_ADC=0.0; //in mV
 	int bits_geheel;
 	float V_bit=5000.0/(pow(2.0,12));//in mV
