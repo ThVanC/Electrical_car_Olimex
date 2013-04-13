@@ -22,7 +22,7 @@ void turnOff(){
 	on = 0;
 }
 
-int Charge(){
+int charge(){
 	GPIO_WRITE(2,27, 0);
 	charging = 1;
 }
@@ -85,7 +85,7 @@ char* getBatterijType(){
 	return output;
 }
 
-void Charge_algorithm(){
+void chargeAlgorithm(){
 	switch(batterij_type){
 		case LiPo:
 			charge_LiPo();

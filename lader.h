@@ -17,7 +17,7 @@ int isOn();
 
 //Dit is relay 1 aansturen op pin30. bank 2: pin 27
 void charge();
-void uncharge();
+void discharge();
 int isCharging();
 
 //we geven een stroom door
@@ -27,6 +27,6 @@ void convertCurrent();
 void setBatterijType(int v);
 char* getBatterijType();
 
-void Charge_algorithm();
+void chargeAlgorithm();
 
 #endif
