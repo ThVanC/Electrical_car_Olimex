@@ -13,13 +13,13 @@ int charge_NiMH(){
 	int V_bat;
 	setCurrent(C);
 
-	struct timespec sleepTime_NiMH,sleepTime_Off;
+	struct timespec sleepTime_NiMH,sleepTime_off;
 	
 	// Slaaptijd tussen opeenvolgende metingen, in milliseconden
 	sleepTime_NiMH.tv_sec = 0;
 	sleepTime_NiMH.tv_nsec = 100 * 1000000L;
-	sleepTime_Off.tv_sec = 0;
-	sleepTime_Off.tv_nsec = 5000 * 1000000L;
+	sleepTime_off.tv_sec = 5;
+	sleepTime_off.tv_nsec = 0;
 
 	while (on==1) {
 		V_bat=measureV();
