@@ -9,14 +9,10 @@
 
 #define MARGE			0.99 	// Marge-factor
 
-// Teller voor oplaadbeurten
-
-void init_k(){
-	k=0;
-}
 
 int charge_LiPo(){
 	// Definitie van variabelen
+	int k;
 	int voltage;
 	int current;
 	struct timespec sleepTime;
@@ -25,12 +21,16 @@ int charge_LiPo(){
 	sleepTime.tv_sec = 0;
 	sleepTime.tv_nsec = 100 * 1000000L;
 
+	// Initialisatie
+	k = 1;
+
 
 	// Eerste fase:
 	// Legt een constante stroom aan zolang de spanning onder de V_treshold blijft.
 	do {	
 		// Meet huidige spanning
 		voltage = measureV();
+
 		// Stel de stroom in op 1 x C
 		current = 1*C;
 		setCurrent(current);
@@ -53,7 +53,7 @@ int charge_LiPo(){
 		if (voltage > (V_THRESHOLD_CELL*NR_OF_CELLS)*MARGE) k++;
 		
 		// Stel stroom in
-		current = C*(1-k/10.0);
+		current = C*(1-(k/10.0));
 		setCurrent(current);
 
 		// Meet de nieuwe spanning
