@@ -6,7 +6,7 @@ int V_max; //in mV de maximale spanning in deze sessie
 //DON'T FORGET: init_V_max voor elke oplaadsessie !!!
 
 void init_V_max();
-void charge_NiMH();
+int charge_NiMH();
 
 #endif
 

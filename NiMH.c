@@ -3,24 +3,40 @@
 #include "metingen.h"
 #include <stdio.h>
 #include "NiMH.h"
+#include <time.h>
 
 void init_V_max(){
 	V_max=0;
 }
 
-void charge_NiMH(){
+int charge_NiMH(){
 	int V_bat;
-
 	setCurrent(C);
-	V_bat=measureV();
 
-	if(V_bat<V_max*0.9975){
-		//hoe kan je controleren of dit 5 sec lang zo blijft (andere tijdsduur is ook goed, maar men stelt 5 sec voor)
-		turnOff();
-	}
+	struct timespec sleepTime_NiMH,sleepTime_Off;
+	
+	// Slaaptijd tussen opeenvolgende metingen, in milliseconden
+	sleepTime_NiMH.tv_sec = 0;
+	sleepTime_NiMH.tv_nsec = 100 * 1000000L;
+	sleepTime_Off.tv_sec = 0;
+	sleepTime_Off.tv_nsec = 5000 * 1000000L;
 
-	if(V_max<V_bat){
-		V_max=V_bat;
+	while (on==1) {
+		V_bat=measureV();
+	
+		if(V_max<V_bat){
+			V_max=V_bat;
+		}
+	
+		if(V_bat<V_max*0.9975){
+			//hoe kan je controleren of dit 5 sec lang zo blijft (andere tijdsduur is ook goed, maar men stelt 5 sec voor)
+			nanosleep(&sleepTime_off, (struct timespec *) NULL);
+			if(V_bat<V_max*0.9975){
+				return 1;
+			}
+		}
+
+		nanosleep(&sleepTime_NiMH, (struct timespec *) NULL);
 	}
 	
 }
