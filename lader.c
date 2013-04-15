@@ -9,7 +9,7 @@ int init(){
 	gpio_output(2,27);
 	gpio_output(2,28);
 	turnOff();
-	Charge();
+	charge();
 }
 
 void turnOn(){
