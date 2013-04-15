@@ -32,6 +32,61 @@ void setStateOfCharge(int i){
 	state_of_charge=i;
 }
 
+time_t getTime(){
+	return time;
+}
+
+time_t setTime(time_t t){
+	time=t;
+}
+
+int getDistance(){
+	return distance;
+}
+
+void setDistance(int i){
+	distance=i;
+}
+
+int getMaxEnergyPerDistance(){
+	return max_energy_per_distance;
+}
+
+void setMaxEnergyPerDistance(int i){
+	max_energy_per_distance=i;
+}
+
+int getEnergy(){
+	return energy;
+}
+void setEnergy(int i){
+	energy=i;
+}
+
+int getCapacity(){
+	return capacity;
+}
+
+void setCapacity(int i){
+	capacity=i;
+}
+
+int getMaxLoad(){
+	return max_load;
+}
+
+void setMaxLoad(int i){
+	max_load=i;
+}
+
+int getMaxUnload(){
+	return max_unload;
+}
+void setMaxUnload(int i){
+	max_unload=i;
+}
+
+
 void setTemperature(int i){
 	temperature=i;
 	if(i>max_temp){
