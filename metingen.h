@@ -5,7 +5,7 @@
 #define R3	220
 #define R4	180
 #define R5	56
-#define R6	220
+#define R6	120
 
 
 int initMeasurements();
