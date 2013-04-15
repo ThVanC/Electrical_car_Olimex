@@ -1,6 +1,7 @@
 #include "lipo.h"
 #include "metingen.h"
 #include <time.h>
+#include "lader.h"
 
 #define	V_THRESHOLD_CELL 	4200.0	// Tresholdspanning voor een cel (mV)
 #define	C 			4000.0 	// Stroomcapaciteit (mAh)
@@ -9,7 +10,10 @@
 #define MARGE			0.99 	// Marge-factor
 
 // Teller voor oplaadbeurten
-global int k = 1;
+
+void init_k(){
+	k=0;
+}
 
 int charge_LiPo(){
 	// Definitie van variabelen
@@ -20,6 +24,7 @@ int charge_LiPo(){
 	// Slaaptijd tussen opeenvolgende metingen, in milliseconden
 	sleepTime.tv_sec = 0;
 	sleepTime.tv_nsec = 100 * 1000000L;
+
 
 	// Eerste fase:
 	// Legt een constante stroom aan zolang de spanning onder de V_treshold blijft.
