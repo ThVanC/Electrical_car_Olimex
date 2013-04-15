@@ -1,5 +1,6 @@
 #include "metingen.h"
 #include "adc.h"
+#include <sys/time.h>
 
 int initMeasurements(){
 	initLRADC0();
@@ -31,4 +32,38 @@ int measureI(){
 
 int measureT(){
 	//dit is met i²c
+}
+
+int calculateStateofCharge(int prevSoC,int *prevCurrent,int *prevVoltage, unsigned long *prevTime){
+	
+	// Definieer variabelen
+	int current;
+	int voltage;
+	unsigned long currentTime;
+	int newStateofCharge;
+	struct timeval tv;
+
+	// Lees huidige spanning en stroom in
+	current = measureI();
+	voltage = measureV();
+
+	// Lees huidige tijd in (microseconden)
+	gettimeofday(&tv,NULL);
+	currentTime = tv.tv_sec * 1000000L + tv.tv_usec;
+	
+	// Als alle pointers NULL zijn, moet initialisatie uitgevoerd worden
+	if (prevCurrent == NULL && prevVoltage == NULL && prevTime == NULL) {
+	 	// TODO: bepaal initialisatiewaarde
+	}else if (prevCurrent != NULL && prevVoltage != NULL && prevTime != NULL){
+		newStateofCharge = prevSoC + (((current - &prevCurrent) / 2) * (currentTime - &prevTime)) / lading;
+	} else{
+		// Fout: sommige pointers waren NULL-pointers
+		return -1;
+	}
+
+	// Update 'vorige' waarden
+	&prevCurrent = current;
+	&prevVoltage = voltage;
+	&prevTime = currentTime;
+	return newStateofCharge;
 }
