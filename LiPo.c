@@ -48,7 +48,7 @@ int charge_LiPo(){
 		if (voltage > (V_THRESHOLD_CELL*NR_OF_CELLS)*MARGE) k++;
 		
 		// Stel stroom in
-		current = C*(1-k/10);
+		current = C*(1-k/10.0);
 		setCurrent(current);
 
 		// Meet de nieuwe spanning
