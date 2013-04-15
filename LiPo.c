@@ -2,8 +2,8 @@
 #include "metingen.h"
 #include <time.h>
 
-#define	V_THRESHOLD_CELL 	4200	// Tresholdspanning voor een cel (mV)
-#define	C 			4000 	// Stroomcapaciteit (mAh)
+#define	V_THRESHOLD_CELL 	4200.0	// Tresholdspanning voor een cel (mV)
+#define	C 			4000.0 	// Stroomcapaciteit (mAh)
 #define	NR_OF_CELLS		2 	// Aantal cellen in parallel
 
 #define MARGE			0.99 	// Marge-factor
