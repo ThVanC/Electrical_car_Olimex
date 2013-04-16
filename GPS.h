@@ -18,6 +18,7 @@ int aantal_nodes;
 int nodeNumber;
 GPS_node* track;
 
+void initGPS();
 void downloadGPS();
 void getTrack();
 void followTrack();
