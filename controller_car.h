@@ -1,11 +1,3 @@
-<<<<<<< HEAD
-enum mode{
-	rust,
-	rijd,
-	rijd_en_zoek,
-	laad
-}
-=======
 #ifndef CONTROLLER_CAR_H
 #define CONTROLLER_CAR_H
 
@@ -32,4 +24,3 @@ void setStateOfCharge(int i);
 void alarm(int code);
 
 #endif
->>>>>>> 3bd2912827071a719ce6daab1eee58c8e8246a09
