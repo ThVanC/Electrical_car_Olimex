@@ -3,8 +3,8 @@
 #include <time.h>
 #include "lader.h"
 
-#define	V_THRESHOLD_CELL 	4200.0	// Tresholdspanning voor een cel (mV)
-#define	C 			4000.0 	// Stroomcapaciteit (mAh)
+#define	V_THRESHOLD_CELL 	4200	// Tresholdspanning voor een cel (mV)
+#define	C 			4000 	// Stroomcapaciteit (mAh)
 #define	NR_OF_CELLS		2 	// Aantal cellen in parallel
 
 #define MARGE			0.99 	// Marge-factor
@@ -28,6 +28,9 @@ int charge_LiPo(){
 	// Eerste fase:
 	// Legt een constante stroom aan zolang de spanning onder de V_treshold blijft.
 	do {	
+		// Stopconditie
+		if stopAlgorithm == 1 return 0;
+
 		// Meet huidige spanning
 		voltage = measureV();
 
@@ -49,11 +52,15 @@ int charge_LiPo(){
 	// Wacht totdat de spanning terug V_threshold is en herhaal
 	// Stroom neemt per iteratie 10% af
 	while (current > (1-MARGE)*C) {
+
+		// Stopconditie
+		if stopAlgorithm == 1 return 0;
+
 		// Als spanning ongeveer V_threshold is, verlaag de stroom
 		if (voltage > (V_THRESHOLD_CELL*NR_OF_CELLS)*MARGE) k++;
 		
 		// Stel stroom in
-		current = C*(1-(k/10.0));
+		current = C*(1-(k/10));
 		setCurrent(current);
 
 		// Meet de nieuwe spanning
