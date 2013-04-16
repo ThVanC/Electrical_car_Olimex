@@ -22,13 +22,15 @@ int measureI();
 //uitgedrukt in °C
 int measureT();
 
-// Bepaal de nieuwe State of Charge op basis van vorige waarden
+// Bepaal de nieuwe State of Charge in procent op basis van vorige waarden
 // Vorige waarden worden bijgehouden door caller
-// Aanpassen via pointers van vorige stroom, vorige spanning en tijdstip van vorige meting
-// Gebruik NULL pointers bij eerste SoC bepaling
+// TODO: batterijkarakteristieken nodig
+// Aanpassen via pointers van vorige stroom en tijdstip van vorige meting
+// Wanneer de spanning aan de threshold is: 99% 
+// Wanneer de spanning aan laagste limiet is: 1%
 // return: nieuwe State of Charge
-// return: -1 verkeerde combinatie van pointers meegegeven
-int calculateStateofCharge(int, int*, int*, unsigned long*);
+// return: -1 Een of meerder NULL-pointers
+int calculateStateofCharge(int*, unsigned long*);
 
 
 #endif

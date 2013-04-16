@@ -34,36 +34,47 @@ int measureT(){
 	//dit is met i²c
 }
 
-int calculateStateofCharge(int prevSoC,int *prevCurrent,int *prevVoltage, unsigned long *prevTime){
+int calculateStateofCharge(int *prevCurrent, unsigned long *prevTime){
 	
 	// Definieer variabelen
 	int current;
 	int voltage;
 	unsigned long currentTime;
+	int timePeriod;
 	int newStateofCharge;
 	struct timeval tv;
+	
+	// Controle van de pointers
+	if (prevCurrent == NULL || prevTime == NULL) return -1; 
 
 	// Lees huidige spanning en stroom in
-	current = measureI();
+	// en bepaal de nieuwe som van stromen
+	current = measureI() + &prevCurrent;
 	voltage = measureV();
 
 	// Lees huidige tijd in (microseconden)
 	gettimeofday(&tv,NULL);
 	currentTime = tv.tv_sec * 1000000L + tv.tv_usec;
+
+	// Bereken de periode tussen vorig en huidig sample
+	// Omzetten van microseconden naar uur (1/(1000*1000*60*60)
+	timePeriod = (currentTime - &prevTime)/(1000*1000*60*60);
 	
 	// Als alle pointers NULL zijn, moet initialisatie uitgevoerd worden
-	if (prevCurrent == NULL && prevVoltage == NULL && prevTime == NULL) {
-	 	// TODO: bepaal initialisatiewaarde
-	}else if (prevCurrent != NULL && prevVoltage != NULL && prevTime != NULL){
-		newStateofCharge = prevSoC + (((current - &prevCurrent) / 2) * (currentTime - &prevTime)) / lading;
+	if (voltage > V_THRESHOLD_CELL*NR_OF_CELLS*MARGE) {
+	 	// Batterijspanning is aan threshold
+		// batterij is volledig opgeladen
+		newStateofCharge = 99;
+	}else if (voltage < V_LOW_CELL*NR_OF_CELLS*(2-MARGE)){
+		// Batterij staat op laagste spanning
+		newStateofCharge = 1;
 	} else{
-		// Fout: sommige pointers waren NULL-pointers
-		return -1;
+		// Bereken nieuwe SoC
+		newStateofCharge = (current*timePeriod) / C;
 	}
 
 	// Update 'vorige' waarden
 	&prevCurrent = current;
-	&prevVoltage = voltage;
 	&prevTime = currentTime;
 	return newStateofCharge;
 }
