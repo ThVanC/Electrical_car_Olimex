@@ -25,6 +25,11 @@ void turnOff(){
 int charge(){
 	GPIO_WRITE(2,27, 0);
 	charging = 1;
+	if(isOn()==1){
+		/*We roepen meteen ook het laadalgoritme op zodat er zeker niet ongecontroleerd kan gebeuren. 
+		We moeten voor zekerheid ook controleren dat de pcb niet aanstaat anders is het nutteloos van het oplaadalgoritme te laten rekenen.*/
+		chargeAlgorithm();
+	}
 }
 
 int discharge(){
