@@ -15,6 +15,11 @@ typedev struct GPS_node{
 };
 
 int aantal_nodes;
+int nodeNumber;
 GPS_node* track;
+
+void downloadGPS();
+void getTrack();
+void followTrack();
 	
 #endif
