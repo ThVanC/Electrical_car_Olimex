@@ -47,6 +47,8 @@ int isCharging(){
 
 void setCurrent(int i){
 	current=i;
+	convertCurrent();
+	/*Hier moeten we ook de waarde in 1 keer doorsturen naar de comparator zodat die stroom aangepast wordt.*/
 }
 
 void convertCurrent(){
