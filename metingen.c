@@ -45,11 +45,11 @@ int calculateStateofCharge(int *prevCurrent, unsigned long *prevTime){
 	struct timeval tv;
 	
 	// Controle van de pointers
-	if (prevCurrent == NULL || prevTime == NULL) return -1; 
+	if (prevCurrent == NULL || prevTime == NULL) return -1; 
 
 	// Lees huidige spanning en stroom in
 	// en bepaal de nieuwe som van stromen
-	current = measureI() + &prevCurrent;
+	current = measureI() + *prevCurrent;
 	voltage = measureV();
 
 	// Lees huidige tijd in (microseconden)
@@ -58,7 +58,7 @@ int calculateStateofCharge(int *prevCurrent, unsigned long *prevTime){
 
 	// Bereken de periode tussen vorig en huidig sample
 	// Omzetten van microseconden naar uur (1/(1000*1000*60*60)
-	timePeriod = (currentTime - &prevTime)/(1000*1000*60*60);
+	timePeriod = (currentTime - *prevTime)/(1000*1000*60*60);
 	
 	// Als alle pointers NULL zijn, moet initialisatie uitgevoerd worden
 	if (voltage > V_THRESHOLD_CELL*NR_OF_CELLS*MARGE) {
@@ -74,7 +74,7 @@ int calculateStateofCharge(int *prevCurrent, unsigned long *prevTime){
 	}
 
 	// Update 'vorige' waarden
-	&prevCurrent = current;
-	&prevTime = currentTime;
+	*prevCurrent = current;
+	*prevTime = currentTime;
 	return newStateofCharge;
 }

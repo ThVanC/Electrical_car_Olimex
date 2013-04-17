@@ -29,7 +29,7 @@ int charge_LiPo(){
 	// Legt een constante stroom aan zolang de spanning onder de V_treshold blijft.
 	do {	
 		// Stopconditie
-		if stopAlgorithm == 1 return 0;
+		if (stopAlgorithm == 1) return 0;
 
 		// Meet huidige spanning
 		voltage = measureV();
@@ -54,7 +54,7 @@ int charge_LiPo(){
 	while (current > (1-MARGE)*C) {
 
 		// Stopconditie
-		if stopAlgorithm == 1 return 0;
+		if (stopAlgorithm == 1) return 0;
 
 		// Als spanning ongeveer V_threshold is, verlaag de stroom
 		if (voltage > (V_THRESHOLD_CELL*NR_OF_CELLS)*MARGE) k++;
