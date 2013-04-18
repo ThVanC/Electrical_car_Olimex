@@ -1,6 +1,6 @@
 #include "lipo.h"
 #include "metingen.h"
-#include <time.h>
+#include <sys/time.h>
 #include "lader.h"
 
 #define	V_THRESHOLD_CELL 	4200	// Tresholdspanning voor een cel (mV)

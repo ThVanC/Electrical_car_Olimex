@@ -53,12 +53,12 @@ void setCurrent(int i){
 
 void convertCurrent(){
 	//gebruik altijd een positieve stroom, op of ontladen is via relais 
-	float V_ADC=0.0; //in mV
+	int V_ADC=0; //in mV
 	int bits_geheel;
-	float V_bit=5000.0/(pow(2.0,12));//in mV
+	int V_bit=(int)5000.0/(pow(2.0,12));//in mV
 
 	//spanning in mV
-	V_ADC=2500+(current*0.1);
+	V_ADC=2500+(int)(current*0.1);
 	bits_geheel=V_ADC/V_bit;
 
 	//bits_geheel moet nog omgezet worden naar een bitrij
