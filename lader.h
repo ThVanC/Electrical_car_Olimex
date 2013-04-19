@@ -7,6 +7,10 @@ int on;
 //Charging: 1, discharging: 0
 int charging;
 
+// Variabelen voor State of Charge
+int integratedCurrent; // Accumulatie van vorige stromen
+unsigned long timeOfMeasurement;
+
 //Lipo: 0, NiMH: 1
 enum type_batterij {LiPo, NiMH} batterij_type;
 
@@ -23,6 +27,13 @@ int isCharging();
 //we geven een stroom door
 void setCurrent(int i);
 void convertCurrent();
+
+// Herbereken de SoC en update de waarde in de contoller
+// Om nauwkeurig te zijn moet deze functie regelmatig opgeroepen worden
+void updateStateofCharge();
+
+// Controleer of de batterij opgeladen is tot zijn limiet (SoC)
+int isAtChargeLimit(int load)
 
 void setBatterijType(int v);
 char* getBatterijType();

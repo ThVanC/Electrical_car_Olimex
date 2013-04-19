@@ -1,5 +1,6 @@
 #include "lipo.h"
 #include "metingen.h"
+#include "controller_car.h"
 #include <sys/time.h>
 #include "lader.h"
 
@@ -30,6 +31,7 @@ int charge_LiPo(int VThreshCell, int cap, int nrOfCells, int socLoad){
 	do {	
 		// Stopconditie
 		if (stopAlgorithm == 1) return 0;
+		if (isAtChargeLimit(socLoad)) return 2;
 
 		// Meet huidige spanning
 		voltage = measureV();
@@ -55,6 +57,7 @@ int charge_LiPo(int VThreshCell, int cap, int nrOfCells, int socLoad){
 
 		// Stopconditie
 		if (stopAlgorithm == 1) return 0;
+		if (isAtChargeLimit(socLoad)) return 2;
 
 		// Als spanning ongeveer V_threshold is, verlaag de stroom
 		if (voltage > (VThreshCell*nrOfCells)*MARGE) k++;

@@ -1,4 +1,5 @@
 #include "lader.h"
+#include "metingen.h"
 #include "gpio-mmap.h"
 #include <stdio.h>
 #include "NiMH.h"
@@ -64,6 +65,23 @@ void convertCurrent(){
 	//bits_geheel moet nog omgezet worden naar een bitrij
 	//deze bitrij moeten we dan ofwel als output geven ofwel onder een variabele steken in het h-bestand
 }
+
+
+// Update de SoC
+void updateStateofCharge(){
+	// Bereken SoC
+	int soc = calculateStateofCharge(&integratedCurrent, &timeOfMeasurement);
+	// Update de waarde in controller (?)
+	setStateOfCharge(soc);
+}
+
+
+// Controleer of de batterij aan zijn limiet is
+int isAtChargeLimit(int load){
+	if(getStateOfCharge() < load) return 0;
+	else return 1;
+}
+
 
 void setBatterijType(int v){
 	batterij_type = (enum type_batterij)(v);
