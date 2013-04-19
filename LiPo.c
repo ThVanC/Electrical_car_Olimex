@@ -10,7 +10,7 @@
 #define MARGE			0.99 	// Marge-factor
 
 
-int charge_LiPo(){
+int charge_LiPo(int VThreshCell, int cap, int nrOfCells, int socLoad){
 	// Definitie van variabelen
 	int k;
 	int voltage;
@@ -35,12 +35,12 @@ int charge_LiPo(){
 		voltage = measureV();
 
 		// Stel de stroom in op 1 x C
-		current = 1*C;
+		current = 1*cap;
 		setCurrent(current);
 		
 		// Wacht enkele milliseconden vooraleer volgende meting uit te voeren.
 		nanosleep(&sleepTime, (struct timespec *) NULL);
-	} while (voltage < (V_THRESHOLD_CELL*NR_OF_CELLS)*MARGE);
+	} while (voltage < (VThreshCell*nrOfCells)*MARGE);
 
 
 	// Meet nu zowel stroom als spanning
@@ -51,16 +51,16 @@ int charge_LiPo(){
 	// Laat de stroom afnemen.
 	// Wacht totdat de spanning terug V_threshold is en herhaal
 	// Stroom neemt per iteratie 10% af
-	while (current > (1-MARGE)*C) {
+	while (current > (1-MARGE)*cap) {
 
 		// Stopconditie
 		if (stopAlgorithm == 1) return 0;
 
 		// Als spanning ongeveer V_threshold is, verlaag de stroom
-		if (voltage > (V_THRESHOLD_CELL*NR_OF_CELLS)*MARGE) k++;
+		if (voltage > (VThreshCell*nrOfCells)*MARGE) k++;
 		
 		// Stel stroom in
-		current = C*(1-(k/10));
+		current = cap*(1-(k/10));
 		setCurrent(current);
 
 		// Meet de nieuwe spanning
