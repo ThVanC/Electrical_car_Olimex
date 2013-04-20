@@ -18,7 +18,7 @@ int initDrive(){
 	speed(0);
 }
 
-int forward(){
+int moveForward(){
 
    // Set the duty cycle
    imx233_wr(HW_PWM_ACTIVE1, 0x000008ca);
@@ -30,7 +30,7 @@ int forward(){
    imx233_wr(HW_PWM_CTRL_SET, 0x06000002);
 }
 
-int left(){
+int moveLeft(){
 
    // Set the duty cycle
 	//we kiezen 3/4 van de periode voor forward. Dit moet wel nog allemaal geverifieerd worden!
@@ -43,7 +43,7 @@ int left(){
    imx233_wr(HW_PWM_CTRL_SET, 0x06000002);
 }
 
-int right(){
+int moveRight(){
 	//We kiezen 5/4 van de periode van forward. Verifieren!!
    // Set the duty cycle
    imx233_wr(HW_PWM_ACTIVE1, 0x00000bb8);
