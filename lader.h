@@ -33,7 +33,7 @@ void convertCurrent();
 void updateStateofCharge();
 
 // Controleer of de batterij opgeladen is tot zijn limiet (SoC)
-int isAtChargeLimit(int load)
+int isAtChargeLimit(int load);
 
 void setBatterijType(int v);
 char* getBatterijType();

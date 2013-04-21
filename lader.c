@@ -5,6 +5,7 @@
 #include "NiMH.h"
 #include "LiPo.h"
 #include <math.h>
+#include "controller_car.h"
 
 int init(){
 	gpio_output(2,27);
@@ -23,7 +24,7 @@ void turnOff(){
 	on = 0;
 }
 
-int charge(){
+void charge(){
 	GPIO_WRITE(2,27, 0);
 	charging = 1;
 	if(isOn()==1){
@@ -33,7 +34,7 @@ int charge(){
 	}
 }
 
-int discharge(){
+void discharge(){
 	GPIO_WRITE(2,27, 1);
 	charging = 0;
 }
@@ -113,7 +114,7 @@ char* getBatterijType(){
 void chargeAlgorithm(){
 	switch(batterij_type){
 		case LiPo:
-			charge_LiPo();
+			charge_LiPo(specs, load);
 			break;
 		case NiMH:
 			charge_NiMH();

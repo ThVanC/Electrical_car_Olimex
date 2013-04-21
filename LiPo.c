@@ -11,7 +11,7 @@
 #define MARGE               0.99 	// Marge-factor
 
 
-int charge_LiPo(int VThreshCell, int cap, int nrOfCells, int socLoad){
+int charge_LiPo(battery* spec, int socLoad){
 	// Definitie van variabelen
 	int k;
 	int voltage;
@@ -36,12 +36,12 @@ int charge_LiPo(int VThreshCell, int cap, int nrOfCells, int socLoad){
 		voltage = measureV();
 
 		// Stel de stroom in op 1 x C
-		current = 1*cap;
+		current = 1*spec->capacity;
 		setCurrent(current);
 		
 		// Wacht enkele milliseconden vooraleer volgende meting uit te voeren.
 		usleep(sleepTime*1000);
-	} while (voltage < (VThreshCell*nrOfCells)*MARGE);
+	} while (voltage < (spec->volt_max_cell*spec->nr_of_cells)*MARGE);
 
 
 	// Meet nu zowel stroom als spanning
@@ -52,17 +52,17 @@ int charge_LiPo(int VThreshCell, int cap, int nrOfCells, int socLoad){
 	// Laat de stroom afnemen.
 	// Wacht totdat de spanning terug V_threshold is en herhaal
 	// Stroom neemt per iteratie 10% af
-	while (current > (1-MARGE)*cap) {
+	while (current > (1-MARGE)*spec->capacity) {
 
 		// Stopconditie
 		if (charging == 0) return 0;
 		if (isAtChargeLimit(socLoad)) return 2;
 
 		// Als spanning ongeveer V_threshold is, verlaag de stroom
-		if (voltage > (VThreshCell*nrOfCells)*MARGE) k++;
+		if (voltage > (spec->volt_max_cell*spec->nr_of_cells)*MARGE) k++;
 		
 		// Stel stroom in
-		current = cap*(1-(k/10));
+		current = spec->capacity*(1-(k/10));
 		setCurrent(current);
 
 		// Meet de nieuwe spanning

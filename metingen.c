@@ -1,6 +1,9 @@
 #include "metingen.h"
 #include "adc.h"
 #include <sys/time.h>
+#include "controller_car.h"
+
+#define MARGE 0.99
 
 int initMeasurements(){
 	initLRADC0();
@@ -61,16 +64,18 @@ int calculateStateofCharge(int *prevCurrent, unsigned long *prevTime){
 	timePeriod = (currentTime - *prevTime)/(1000*1000*60*60);
 	
 	// Als alle pointers NULL zijn, moet initialisatie uitgevoerd worden
-	if (voltage > V_THRESHOLD_CELL*NR_OF_CELLS*MARGE) {
+	if (voltage > specs.volt_max_cell*specs.nr_of_cells*MARGE) {
 	 	// Batterijspanning is aan threshold
 		// batterij is volledig opgeladen
-		newStateofCharge = 99;
-	}else if (voltage < V_LOW_CELL*NR_OF_CELLS*(2-MARGE)){
+        // 99.99% = 9999
+		newStateofCharge = 9999;
+	}else if (voltage < specs.volt_min_cell*specs.nr_of_cells*(2-MARGE)){
 		// Batterij staat op laagste spanning
-		newStateofCharge = 1;
+        // 1% = 100
+		newStateofCharge = 100;
 	} else{
 		// Bereken nieuwe SoC
-		newStateofCharge = (current*timePeriod) / C;
+		newStateofCharge = (current*timePeriod) / specs.capacity;
 	}
 
 	// Update 'vorige' waarden

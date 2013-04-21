@@ -4,6 +4,12 @@
 #ifndef CONTROLLER_CAR
 #define CONTROLLER_CAR
 
+void initBatterySpecs(int nr_of_cells, int volt_max_cell, int volt_min_cell, int capacity){
+    specs.capacity = capacity;
+    specs.nr_of_cells = nr_of_cells;
+    specs.volt_max_cell = volt_max_cell;
+    specs.volt_min_cell = volt_min_cell;
+}
 
 int getVoltage(){
 	return voltage;

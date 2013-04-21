@@ -8,6 +8,7 @@
 #define R6	120
 
 
+
 int initMeasurements();
 
 //spanningsmeting: LRADC1 pin32
