@@ -71,7 +71,8 @@ void convertCurrent(){
 // Update de SoC
 void updateStateofCharge(){
 	// Bereken SoC
-	int soc = calculateStateofCharge(&integratedCurrent, &timeOfMeasurement);
+    int soc = getStateOfCharge();
+	calculateStateofCharge(&soc, &timeOfMeasurement);
 	// Update de waarde in controller (?)
 	setStateOfCharge(soc);
 }

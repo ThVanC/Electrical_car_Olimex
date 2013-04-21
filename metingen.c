@@ -1,10 +1,17 @@
+#define TEST
+
+#include <sys/time.h>
+#ifndef TEST
 #include "metingen.h"
 #include "adc.h"
-#include <sys/time.h>
 #include "controller_car.h"
-
+#else
+#include "soc_test.h"
+#include <stdio.h>
+#endif
 #define MARGE 0.99
 
+#ifndef TEST
 int initMeasurements(){
 	initLRADC0();
 	initLRADC1();
@@ -36,8 +43,9 @@ int measureI(){
 int measureT(){
 	//dit is met i²c
 }
+#endif
 
-int calculateStateofCharge(int *prevCurrent, unsigned long *prevTime){
+int calculateStateofCharge(int* oldSoC, unsigned long *prevTime){
 	
 	// Definieer variabelen
 	int current;
@@ -48,38 +56,48 @@ int calculateStateofCharge(int *prevCurrent, unsigned long *prevTime){
 	struct timeval tv;
 	
 	// Controle van de pointers
-	if (prevCurrent == NULL || prevTime == NULL) return -1; 
+	if (oldSoC == NULL || prevTime == NULL) return -1;
 
 	// Lees huidige spanning en stroom in
 	// en bepaal de nieuwe som van stromen
-	current = measureI() + *prevCurrent;
+	current = measureI();
 	voltage = measureV();
-
-	// Lees huidige tijd in (microseconden)
+#ifdef TEST
+    printf("## SoC: Voltage = %d mV and total current = %d mA\n", voltage, current);
+#endif
+	// Lees huidige tijd in (milliseconden)
 	gettimeofday(&tv,NULL);
-	currentTime = tv.tv_sec * 1000000L + tv.tv_usec;
+	currentTime = tv.tv_sec * 1000 + tv.tv_usec/1000;
 
 	// Bereken de periode tussen vorig en huidig sample
-	// Omzetten van microseconden naar uur (1/(1000*1000*60*60)
-	timePeriod = (currentTime - *prevTime)/(1000*1000*60*60);
-	
-	// Als alle pointers NULL zijn, moet initialisatie uitgevoerd worden
+	// Omzetten van milliseconden naar uur (1/(1000*60*60)
+	timePeriod = (int)(currentTime - *prevTime);
+#ifdef TEST
+	printf("Period: %d ms\n",timePeriod);
+#endif
+	// Initialisatie
 	if (voltage > specs.volt_max_cell*specs.nr_of_cells*MARGE) {
 	 	// Batterijspanning is aan threshold
 		// batterij is volledig opgeladen
-        // 99.99% = 9999
-		newStateofCharge = 9999;
+        // 99.999% = 99999
+		newStateofCharge = 99999;
 	}else if (voltage < specs.volt_min_cell*specs.nr_of_cells*(2-MARGE)){
 		// Batterij staat op laagste spanning
-        // 1% = 100
-		newStateofCharge = 100;
+        // 1% = 1000
+		newStateofCharge = 1000;
 	} else{
 		// Bereken nieuwe SoC
-		newStateofCharge = (current*timePeriod) / specs.capacity;
+        // used = I x dt [mA x ms]/3600 = [uAh]
+        int used = (current*timePeriod)/(3600);
+#ifdef TEST
+        printf("Verbruik is %d uAh\n",used);
+#endif
+        // used * 100 => procent, x 1000 niet nodig, want in [uAh]
+		newStateofCharge = *oldSoC + (used*100)/(specs.capacity);
 	}
 
 	// Update 'vorige' waarden
-	*prevCurrent = current;
+	*oldSoC = newStateofCharge;
 	*prevTime = currentTime;
 	return newStateofCharge;
 }
