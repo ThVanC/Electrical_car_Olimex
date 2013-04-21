@@ -18,6 +18,10 @@ void initGPS(){
     track = (GPS_node*)malloc(aantal_nodes*sizeof(GPS_node));
 }
 
+void destroyGPS(){
+    free(track);
+}
+
 void followTrack(){
     int millisec = 0;
     for(nodeNumber=0; nodeNumber<aantal_nodes; nodeNumber++){
@@ -68,10 +72,10 @@ void followTrack(){
         speed(track[nodeNumber].max_speed);
 #endif
         /*Kilometerteller*/
-        totalDistance += track[nodeNumber].distance/100;
+        totalDistance += track[nodeNumber].distance/1000;
         
 #ifdef TESTMODE
-        printf("Drive %d m at %d m/s = %d ms\n\n",track[nodeNumber].distance/100, track[nodeNumber].max_speed*10, calculateTime(track[nodeNumber].distance, track[nodeNumber].max_speed));
+        printf("Drive %d m at %d m/s = %d ms\n\n",track[nodeNumber].distance/1000, track[nodeNumber].max_speed, calculateTime(track[nodeNumber].distance, track[nodeNumber].max_speed));
 #endif
         
         // Stop de lus voor de bepaalde tijd
@@ -95,22 +99,16 @@ int calculateTime(int distance, int speed){
 	return time;
 }
 
-void setTimespec(struct timespec* spec, int millisec){
-    spec->tv_sec = millisec/1000;
-    spec->tv_nsec = (millisec - (spec->tv_sec)) * 1000000L;
-}
-
-
 void generateGPSData(int nodes){
     int i = 0;
     aantal_nodes = nodes;
     track = (GPS_node*)realloc(track, nodes);
     for(i = 0; i < nodes; i++){
         track[i].dir = rand() % 5;
-        track[i].distance = rand() % 10000; // maximaal 100m
-        track[i].max_speed = 1; // = 10 m/s
+        track[i].distance = rand() % 10000; // maximaal 10m
+        track[i].max_speed = 1; // = 1 m/s = 3.6km/h
 #ifdef TESTMODE
-        printf("%d: Node set for distance: %d cm\n",i,track[i].distance);
+        printf("%d: Node set for distance: %d mm\n",i,track[i].distance);
 #endif
     }
 }

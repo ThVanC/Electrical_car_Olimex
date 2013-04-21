@@ -20,6 +20,8 @@ int main(int argc, char** args){
     followTrack();
     printf("## You have reached your final destination! ##\n");
     printf("Total distance covered: %d m\n", totalDistance);
+    destroyGPS();
+    printf("Cleaned up!\n");
     return 0;
 }
 
