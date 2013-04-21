@@ -79,18 +79,18 @@ int calculateStateofCharge(int* oldSoC, unsigned long *prevTime){
 	if (voltage > specs.volt_max_cell*specs.nr_of_cells*MARGE) {
 	 	// Batterijspanning is aan threshold
 		// batterij is volledig opgeladen
-        // 99.999% = 99999
-		newStateofCharge = 99999;
+        // 99.999% = 99,999,999
+		newStateofCharge = 99999999;
 	}else if (voltage < specs.volt_min_cell*specs.nr_of_cells*(2-MARGE)){
 		// Batterij staat op laagste spanning
         // 1% = 1000
-		newStateofCharge = 1000;
+		newStateofCharge = 1000000;
 	} else{
 		// Bereken nieuwe SoC
         // used = I x dt [mA x ms]/3600 = [uAh]
-        int used = (current*timePeriod)/(3600);
+        int used = (current*timePeriod*1000)/(3600);
 #ifdef TEST
-        printf("Verbruik is %d uAh\n",used);
+        printf("Verbruik is %d mAh\n",used);
 #endif
         // used * 100 => procent, x 1000 niet nodig, want in [uAh]
 		newStateofCharge = *oldSoC + (used*100)/(specs.capacity);

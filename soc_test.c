@@ -53,10 +53,10 @@ int main(int argc, char** argv){
         voltage = measureV();
         soc = calculateStateofCharge(&sum, &now);
         printf("%ld ms past start ",now-start_time);
-        printf("SoC is %f\n",soc/1000.0);
+        printf("SoC is %f\n",soc/1000000.0);
         gettimeofday(&timer, NULL);
         now = timer.tv_sec*1000 + tv.tv_usec/1000;
-        usleep(5000*1000);
+        usleep(500*1000);
     } while (now - start_time < 14000);
     
     return 0;
