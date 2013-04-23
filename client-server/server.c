@@ -53,20 +53,17 @@ char* SetVariables(char* buffer){
 
 void *doeiets(void* erin){
 	struct arg input=*((struct arg *)erin);
-	int error; 
+	int error, open=1; 
 	char *tekst=malloc(tekstlengte*sizeof(char));
 	void *buffer=malloc(bufferlengte*sizeof(char));
-	//struct sockaddr_storage client_addr;
-	//socklen_t clilen;
 	sprintf(tekst,"%s\r\n",giveJSON());
 	if(input.socket1<0){printf("problemen bij accept, error nummer %i, boodschap: %s\n",input.socket1, gai_strerror(input.socket1));return 0;}
-	while(1){
+	while(open){
 		error=send(input.socket1,tekst,strlen(tekst)*sizeof(char),input.hints.ai_flags);
-		//send(input.socket1,"Dit is een tekst\r\n",17*sizeof(char), input.hints.ai_flags);
-		if(error<0)printf("problemen bij verzenden van het pakket\n");
+		if(error<0){printf("problemen bij verzenden van het pakket\n");open=0;}
 
 		error=read(input.socket1,buffer,255);
-		if(error<0)printf("problemen bij het ontvangen van de client zijn tweede bericht\n");
+		if(error<0){printf("problemen bij het ontvangen van de client zijn tweede bericht\n");open=0;}
 		sprintf(tekst,"%s\n",SetVariables((char*)buffer));
 	}
 	close(input.socket1);

@@ -44,6 +44,7 @@ json_object* SetVariables(char* buffer){
 		GET_arraylen = json_object_array_length(GET);
   		for (j=0; j<GET_arraylen; j++){
 			strncpy(GET_waarde,json_object_to_json_string(json_object_array_get_idx(GET, j))+1, strlen(json_object_to_json_string(json_object_array_get_idx(GET, j)))-2);
+			//waarde[strlen(json_object_to_json_string(val))-2]='\0';
 			GET_waarde[strlen(json_object_to_json_string(json_object_array_get_idx(GET, j)))-2]='\0';
 			if(!strncmp("voltage",GET_waarde,7)){
 				sprintf(string,"{\"voltage\" : \"%i\"}",/*getVoltage()*/28);
@@ -71,17 +72,32 @@ json_object* SetVariables(char* buffer){
 
 
 int main(int argc,char *argv){
-
 	struct addrinfo hints1, hints, *info;
-	int error, socket1, connection, nieuwepoort;
-	//int teller=0;
+	int error, connection, nieuwepoort, open=1;
 	char* tekst=malloc(tekstlengte*sizeof(char)), *buffer=malloc(bufferlengte*sizeof(char));
-
+	char* host=malloc(IPLengte*sizeof(char));
 	memset(&hints1, 0, sizeof hints1); //De hints-struct leegmaken
-	
 	struct arg input;
 	init();
-	input=startClient(4931,poort,upperhost);
+
+	input=startClient(4931, poort-2, upperhost);
+	sprintf(tekst,"[{\"add_client\" : \"%s\"}]\n","tekst");
+	error=send(input.socket1,tekst ,strlen(tekst),input.hints.ai_flags);
+	error=read(input.socket1, buffer, 255);
+	host=giveHost(buffer);
+	close(input.socket1);
+	input=startClient(4931,poort,host);
+	while(input.connection<0){
+		input=startClient(4931, poort-2, upperhost);
+		sprintf(tekst,"[{\"remove_client\" : \"%s\"}]\n",buffer);
+		error=send(input.socket1,tekst ,strlen(tekst),input.hints.ai_flags);
+		sprintf(tekst,"[{\"add_client\" : \"%s\"}]\n","tekst");
+		error=send(input.socket1,tekst ,strlen(tekst),input.hints.ai_flags);
+		error=read(input.socket1, buffer, 255);
+		host=giveHost(buffer);
+		close(input.socket1);
+		input=startClient(4931,poort,host);
+	}
 	error=read(input.socket1,buffer,255);
 	if(error<0){printf("problemen bij read (1), error nummer %i, boodschap: %s\n",error, gai_strerror(error));return -5;}
 	nieuwepoort=atoi(buffer);
@@ -99,17 +115,29 @@ int main(int argc,char *argv){
 	usleep(100000);
 	connection=connect(socket1, info->ai_addr, info->ai_addrlen);
 	if(connection<0){printf("problemen bij connection, error nummer %i, boodschap: %s\n",connection, gai_strerror(connection));return -3;}
-	while(1){
+	while(open){
 		error=read(socket1,buffer,255);
-		if(error<0){printf("problemen bij read (1), error nummer %i, boodschap: %s\n",error, gai_strerror(error));return -5;}
+		if(error<0){printf("problemen bij read (1), error nummer %i, boodschap: %s\n",error, gai_strerror(error));open=0;}
 		sprintf(tekst,"%s\r\n",json_object_to_json_string(SetVariables(buffer)));
 		error=send(socket1,tekst,strlen(tekst)*sizeof(char),hints.ai_flags/*18*/);
-		if(error<0){printf("problemen bij send, error nummer %i, boodschap: %s\n",error, gai_strerror(error));return -6;}
-		//teller=teller+1;
+		if(error<0){printf("problemen bij send, error nummer %i, boodschap: %s\n",error, gai_strerror(error));open=0;}
 		
 	}
 	close(socket1);
 	//free(tekst);
 	
+}
+
+void closeSocket(){
+	shutdown(socket1, SHUT_RDWR);
+}
+
+char* giveHost(char* buffer){
+	char* host=malloc(IPLengte*sizeof(char));
+	json_object* jobj=json_tokener_parse(buffer);
+	json_object_object_foreach(jobj,key,val);
+	host=strncpy(host,json_object_to_json_string(val)+1,strlen(json_object_to_json_string(val))-2);
+	host[strlen(json_object_to_json_string(val))-2]='\0';
+	return host;
 }
 #endif
