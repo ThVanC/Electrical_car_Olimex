@@ -65,22 +65,33 @@ void gpio_input(int bank, int pin) {
 	gpio_mmap[0x1C2 + (bank*4)] = 1 << pin;
 }
 
-void gpio_eigen_output(int bank, int pin){
-	gpio_mmap[0x120] |= 1 | 1<<1;
-	printf("nieuwe versie\n");
-	gpio_mmap[0x240] &= ~(1 | 1<<1);
-	printf("hopelijk\n");
-	gpio_mmap[0x510]|= 1;
-	gpio_mmap[0x710]|= 1;
-	gpio_mmap[0x510]|= 1;
 
-	gpio_mmap[0x134] |= (1<<5 | 1<<4 );
-	gpio_mmap[0x264] &= ~(1<<9);
-	gpio_mmap[0x264] |= (1<<8);
-	gpio_mmap[0x414] |= (1<<18);
-	gpio_mmap[0x514] &= ~(1<<18);
-	gpio_mmap[0x714] |= (1<<18);
-	GPIO_WRITE(1,18,0);
+/****************************************
+
+Maak gebruik van de adressen die in imx233.h staan om de gpio te gaan gebruiken. 
+De functie zal namelijk de GPIO_BASE offset ervan aftrekken.
+Merk op! Gebruik aub enkel adressen die overeenkomen met een register dat te maken heeft met GPIO-controle (H37). Voor andere doeleinde maak je beste en nieuwe memory mapping.
+
+****************************************/
+void gpio_wr_eigen(long offset, long value){
+	offset = offset - GPIO_BASE;
+	gpio_mmap[offset/4] = value;
 }
 
+/*
+Een voorbeeld om een willekeurige GPIO-pin aan te struren
+void initLCD2(){
+   //multiplexen.
+   gpio_wr_eigen(HW_PINCTRL_MUXSEL2_SET, 0b00000000000000000000000000110000);
+   //stroomsterkte instellen.
+   gpio_wr_eigen(HW_PINCTRL_DRIVE4_SET,  0b00000000000000000000000100000000);
+   //idem.
+   gpio_wr_eigen(HW_PINCTRL_DRIVE4_CLR,  0b00000000000000000000001000000000);
+   //gpio_wr_eigen(HW_PINCTRL_PULL1_SET,   0b00000000000001000000000000000000);
+   //zorgen dat hij niet als input fungeert.
+   gpio_wr_eigen(HW_PINCTRL_DIN1_CLR,    0b00000000000000000000000000000100);
+   //als output werken.
+   gpio_wr_eigen(HW_PINCTRL_DOE1_SET,    0b00000000000000000000000000000100);
+}
+*/
 #endif

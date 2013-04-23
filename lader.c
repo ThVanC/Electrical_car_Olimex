@@ -8,24 +8,24 @@
 #include "controller_car.h"
 
 int init(){
-	gpio_output(2,27);
-	gpio_output(2,28);
+	gpio_output(DIS-CHARGE_BANK, DIS-CHARGE_PIN);
+	gpio_output(ON_OFF_BANK, ON_OFF_PIN);
 	turnOff();
 	charge();
 }
 
 void turnOn(){
-	GPIO_WRITE(2,28, 1);
+	GPIO_WRITE(ON_OFF_BANK, ON_OFF_PIN, 1);
 	on = 1;
 }
 
 void turnOff(){
-	GPIO_WRITE(2,28, 0);
+	GPIO_WRITE(ON_OFF_BANK, ON_OFF_PIN, 0);
 	on = 0;
 }
 
 void charge(){
-	GPIO_WRITE(2,27, 0);
+	GPIO_WRITE(DIS-CHARGE_BANK, DIS-CHARGE_PIN, 0);
 	charging = 1;
 	if(isOn()==1){
 		/*We roepen meteen ook het laadalgoritme op zodat er zeker niet ongecontroleerd kan gebeuren. 
@@ -35,7 +35,7 @@ void charge(){
 }
 
 void discharge(){
-	GPIO_WRITE(2,27, 1);
+	GPIO_WRITE(DIS-CHARGE_BANK, DIS-CHARGE_PIN, 1);
 	charging = 0;
 }
 

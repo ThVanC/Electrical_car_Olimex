@@ -1,6 +1,11 @@
 #ifndef LADER_H
 #define LADER_H
 
+#define ON_OFF_BANK 2
+#define DIS-CHARGE_BANK 2
+#define ON_OFF_PIN 28
+#define DIS-CHARGE_PIN 27
+
 int current; //uitgedrukt in mA
 //On: 1, off: 0
 int on;
