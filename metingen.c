@@ -1,10 +1,11 @@
-#define TEST
+// #define TEST
 
 #include <sys/time.h>
 #ifndef TEST
 #include "metingen.h"
 #include "adc.h"
 #include "controller_car.h"
+#include "lader.h"
 #else
 #include "soc_test.h"
 #include <stdio.h>
@@ -27,17 +28,32 @@ int measureV(){
 	return V_bat;
 }
 
+// Bereken de stroom
+// Positief is naar de batterij
+// negatief weg van de batterij
 int measureI(){
 	int V_LRADC0,V_Hall;//spanningen in mV
 	int curr;//stromen in mA
-
-	V_LRADC0=readLRADC0();
-	V_Hall=(V_LRADC0*(R6 + R3)) / R6;//340 owv 120+220 ; haakjes zo zetten zal best nauwkeurigheid geven
-	
-	//positieve stroom is opladen, negatieve is ontladen
-	curr=(V_Hall-2500)*10; //want 100mV/A => 10mA/mV
-
-	return curr;
+    
+    if (getState() == CHARGING) {
+        // Bij opladen is de stroom in de batterij gelijk aan de stroom uit de lader
+        // De rest van de schakeling wordt gevoed door de externe voeding
+        return current;
+    }else {
+        V_LRADC0=readLRADC0();
+        V_Hall=(V_LRADC0*(R6 + R3)) / R6;
+ 
+        curr=(V_Hall-2500)*10; //want 100mV/A => 10mA/mV
+        if (getState() == DISCHARGING) {
+            // Bij ontladen vloeit de ingestelde stroom weg uit de batterij
+            // En een deel via de Hall sensor naar het circuit
+            return current + curr;
+        }else {
+            // Alle stroom wordt onttrokken door het circuit
+            return curr;
+        }
+        
+    }
 }
 
 int measureT(){
@@ -59,9 +75,9 @@ int calculateStateofCharge(int* oldSoC, unsigned long *prevTime){
 	if (oldSoC == NULL || prevTime == NULL) return -1;
 
 	// Lees huidige spanning en stroom in
-	// en bepaal de nieuwe som van stromen
-	current = measureI();
 	voltage = measureV();
+    current = measureI();
+
 #ifdef TEST
     printf("## SoC: Voltage = %d mV and total current = %d mA\n", voltage, current);
 #endif

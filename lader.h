@@ -38,6 +38,9 @@ enum status {CHARGING, DISCHARGING, USE} status;
 // Schakelen tussen opladen, ontladen of gewoon gebruik
 int setState(enum status);
 
+// Geef huidige status
+enum status getState();
+
 
 //we geven een stroom door
 void setCurrent(int i);

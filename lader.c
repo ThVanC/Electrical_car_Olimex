@@ -107,6 +107,10 @@ int setState(enum status new_state){
     return 0;
 }
 
+enum status getState(){
+    return status;
+}
+
 void setCurrent(int i){
 	current=i;
 	convertCurrent();
