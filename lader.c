@@ -8,7 +8,7 @@
 #include "controller_car.h"
 
 int init(){
-	gpio_output(DIS-CHARGE_BANK, DIS-CHARGE_PIN);
+	gpio_output(DISCHARGE_BANK, DISCHARGE_PIN);
 	gpio_output(ON_OFF_BANK, ON_OFF_PIN);
 	turnOff();
 	charge();
@@ -25,7 +25,7 @@ void turnOff(){
 }
 
 void charge(){
-	GPIO_WRITE(DIS-CHARGE_BANK, DIS-CHARGE_PIN, 0);
+	GPIO_WRITE(DISCHARGE_BANK, DISCHARGE_PIN, 0);
 	charging = 1;
 	if(isOn()==1){
 		/*We roepen meteen ook het laadalgoritme op zodat er zeker niet ongecontroleerd kan gebeuren. 
@@ -35,7 +35,7 @@ void charge(){
 }
 
 void discharge(){
-	GPIO_WRITE(DIS-CHARGE_BANK, DIS-CHARGE_PIN, 1);
+	GPIO_WRITE(DISCHARGE_BANK, DISCHARGE_PIN, 1);
 	charging = 0;
 }
 
@@ -45,6 +45,66 @@ int isOn(){
 
 int isCharging(){
 	return charging;
+}
+
+
+int setState(enum status new_state){
+    if (new_state == status) return 1;
+    // Huidige status bepaalt overgangsmethode
+    switch (status) {
+        case CHARGING:
+            // Stel stroom in op 0A
+            setCurrent(0);
+            if (new_state == DISCHARGING) {
+                // Ontkoppel de lader
+                turnOff();
+                // Schakel naar ontladen
+                discharge();
+                // Koppel lader
+                turnOn();
+                // Stel stroom in op gewenste waarde
+                // TODO: gewenste stroom instellen
+            }else if (new_state == USE){
+                // Veilig ontkoppelen na opladen
+                // Schakel naar ontladen
+                discharge();
+                // Ontkoppel de lader
+                turnOff();
+            }
+            break;
+        case DISCHARGING:
+            // Stel stroom in op 0A
+            setCurrent(0);
+            // Ontkoppel de lader
+            turnOff();
+            if (new_state == CHARGING){
+                // Schakel naar opladen
+                charge();
+                // Koppel de lader
+                turnOn();
+            }
+            break;
+        case USE:
+            if (new_state == DISCHARGING) {
+                // Schakel naar ontladen
+                discharge();
+                // Koppel de lader
+                turnOn();
+                // Stel stroom in
+                // TODO: gewenste stroom instellen
+            }else if (new_state == CHARGING){
+                // Schakel naar opladen
+                charge();
+                // Koppel de lader
+                turnOn();
+                // Stel stroom in
+                // TODO: gewenste stroom instellen
+            }
+            break;
+        default:
+            break;
+    }
+    return 0;
 }
 
 void setCurrent(int i){
@@ -115,7 +175,7 @@ char* getBatterijType(){
 void chargeAlgorithm(){
 	switch(batterij_type){
 		case LiPo:
-			charge_LiPo(specs, load);
+			charge_LiPo(&specs, load);
 			break;
 		case NiMH:
 			charge_NiMH();

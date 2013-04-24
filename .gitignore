@@ -17,3 +17,4 @@
 *.app
 gps_test
 imx233-controller
+soc_test

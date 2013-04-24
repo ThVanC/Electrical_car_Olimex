@@ -2,9 +2,22 @@
 #define LADER_H
 
 #define ON_OFF_BANK 2
-#define DIS-CHARGE_BANK 2
+#define DISCHARGE_BANK 2
 #define ON_OFF_PIN 28
-#define DIS-CHARGE_PIN 27
+#define DISCHARGE_PIN 27
+
+/*****************************************/
+//
+//        COMBINATIES RELAISSTANDEN
+//
+//    STANDEN RELAYS   |  TOESTAND BATT
+// -----------------------------------------
+//  ON & DISCHARGING   |  Ontladen
+//  ON & CHARGING      |  Verboden toestand!
+//  OFF & DISCHARGING  |  Normaal gebruik
+//  OFF & CHARGING     |  Opladen
+//
+/******************************************/
 
 int current; //uitgedrukt in mA
 //On: 1, off: 0
@@ -19,15 +32,12 @@ unsigned long timeOfMeasurement;
 //Lipo: 0, NiMH: 1
 enum type_batterij {LiPo, NiMH} batterij_type;
 
-//Dit is relay 2 aansturen op pin31. bank 2: pin 28
-void turnOn();
-void turnOff();
-int isOn();
+// Toestanden voor relay-standen
+enum status {CHARGING, DISCHARGING, USE} status;
 
-//Dit is relay 1 aansturen op pin30. bank 2: pin 27
-void charge();
-void discharge();
-int isCharging();
+// Schakelen tussen opladen, ontladen of gewoon gebruik
+int setState(enum status);
+
 
 //we geven een stroom door
 void setCurrent(int i);
@@ -44,5 +54,17 @@ void setBatterijType(int v);
 char* getBatterijType();
 
 void chargeAlgorithm();
+
+/* HULPFUNCTIES - NIET rechtstreeks gebruiken */
+
+//Dit is relay 2 aansturen op pin31. bank 2: pin 28
+void turnOn();
+void turnOff();
+int isOn();
+
+//Dit is relay 1 aansturen op pin30. bank 2: pin 27
+void charge();
+void discharge();
+int isCharging();
 
 #endif
