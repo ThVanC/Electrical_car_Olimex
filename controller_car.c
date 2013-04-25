@@ -125,6 +125,10 @@ void alarm(int code){
 	}
 }
 
+int connect(){
+    pthread_mutex_unlock (&connection);
+}
+
 
 
 #endif
