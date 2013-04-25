@@ -46,9 +46,7 @@ void startLoading();
 void startDriving();
 void startSleeping();
 buzy getWork();
-int connect(){
-    pthread_mutex_unlock (&connection);
-}
+int connect();
 
 
 
