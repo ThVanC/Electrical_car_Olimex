@@ -54,9 +54,10 @@ gpio_mmap[0x1C2 + (bank*4)] = 1 << pin;
 }
 
 void gpio_wr_eigen(long offset, long value){
-	offset=offset - GPIO_BASE;
+	offset = offset - GPIO_BASE;
 	gpio_mmap[offset/4] = value;
 }
+
 
 void write_test(){
 	int i;

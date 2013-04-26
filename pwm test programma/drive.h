@@ -6,5 +6,6 @@ int right();
 int forward();
 int speed(int s);
 int initDrive();
+void gpio_test();
 
 #endif

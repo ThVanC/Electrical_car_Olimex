@@ -28,11 +28,19 @@ int *pwm_map() {
 }
 
 int pwm_rd(long offset) {
+	offset = offset- HW_PWM_CTRL;
 	return pwm_mmap[offset/4];
 }
 
+
+/****************************************
+
+Maak gebruik van de adressen die in imx233.h staan om de pwm te gaan gebruiken. 
+De functie zal namelijk de PWM_BASE offset ervan aftrekken.
+Merk op! Gebruik aub enkel adressen die overeenkomen met een register dat te maken heeft met PWM-controle (H37). Voor andere doeleinde maak je beste en nieuwe memory mapping.
+
+****************************************/
 void pwm_wr(long offset, int value) {
 	offset=offset - HW_PWM_CTRL;
-	printf("%d\n",offset);
-	pwm_mmap[offset] = value;
+	pwm_mmap[offset/4] = value;
 }

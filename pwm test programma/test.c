@@ -13,5 +13,5 @@ int main(){
 		usleep(20000);
 	}*/
 	speed(0);
-	
+	//gpio_test();
 }
