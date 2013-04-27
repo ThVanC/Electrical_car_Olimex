@@ -2,12 +2,6 @@
 #define LIPO_H
 #include "controller_car.h"
 
-typedef struct {
-    int capacity;
-	int volt_max_cell;
-	int nr_of_cells;
-} battery;
-
 // Laadalgoritme voor LiPo batterijen
 // parameters: 
 //  - Batterij specificaties
