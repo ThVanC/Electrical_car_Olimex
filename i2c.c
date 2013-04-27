@@ -32,7 +32,7 @@ void i2c_write_data(unsigned char addr, unsigned char* data, int length){
 
 // Wrapper functie: gaat ervan uit dat i2c_init al is opgeroepen
 void i2c_read_temp(unsigned char* msbyte, unsigned char* lsbyte){
-        unsigned char* data[2];
+        unsigned char data[2];
         i2c_read_data(ADDR_TEMPSENSOR, data, 2);
         // Aanpassen van MSByte en LSByte
         *msbyte = data[0];
