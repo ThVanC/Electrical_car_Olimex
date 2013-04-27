@@ -180,7 +180,7 @@ void chargeAlgorithm(){
 			charge_LiPo(&specs, load);
 			break;
 		case NiMH:
-			charge_NiMH();
+			charge_NiMH(load);
 			break;
 		default:
 			printf("You have to configure your battery type!\n");

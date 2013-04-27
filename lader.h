@@ -15,9 +15,9 @@
 //    STANDEN RELAYS   |  TOESTAND BATT
 // -----------------------------------------
 //  ON & DISCHARGING   |  Ontladen
-//  ON & CHARGING      |  Verboden toestand!
+//  ON & CHARGING      |  Opladen
 //  OFF & DISCHARGING  |  Normaal gebruik
-//  OFF & CHARGING     |  Opladen
+//  OFF & CHARGING     |  Verboden toestand!
 //
 /******************************************/
 
