@@ -4,6 +4,7 @@
 #ifndef TEST
 #include "metingen.h"
 #include "adc.h"
+#include "i2c.h"
 #include "controller_car.h"
 #include "lader.h"
 #else
@@ -11,6 +12,7 @@
 #include <stdio.h>
 #endif
 #define MARGE 0.99
+#define TEMP_FRAC 125
 
 #ifndef TEST
 int initMeasurements(){
@@ -57,7 +59,22 @@ int measureI(){
 }
 
 int measureT(){
-	//dit is met i²c
+        unsigned char msbyte, lsbyte;
+        int raw_temp;
+        i2c_read_temp(&msbyte, &lsbyte);
+        // Kap 5 lsb van LSByte af en tel op bij MSByte die 3 bits verschoven is
+        // AND om carry in 12e bit te verwijderen
+        raw_temp = ((lsbyte >> 5) + (msbyte << 3)) & 0x7FF;
+        
+        // Test 11e bit
+        if ((raw_temp & 0x400) != 0){
+                // 11e bit is 1 => negatieve temperatuur
+                return (raw_temp - 0x800)*TEMP_FRAC;
+        } else{
+                // 11e bit is 0 => positieve temperatuur
+                return (raw_temp)*TEMP_FRAC;
+        }
+
 }
 #endif
 
