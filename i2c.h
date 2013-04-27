@@ -23,3 +23,9 @@ void i2c_write_data(unsigned char addr, unsigned char* data, int length);
 // Wrapper om temperatuur te lezen via I2C
 // parameters zijn pointers naar MSByte en LSByte
 void i2c_read_temp(unsigned char* msbyte, unsigned char* lsbyte);
+
+// Wrapper om DAC spanning door te geven
+void i2c_write_DAC(int voltage);
+
+// Wrapper om DAC uit te schakelen
+void i2c_shutdown_DAC();

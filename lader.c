@@ -6,6 +6,7 @@
 #include "LiPo.h"
 #include <math.h>
 #include "controller_car.h"
+#include "i2c.h"
 
 int init(){
 	gpio_output(DISCHARGE_BANK, DISCHARGE_PIN);
@@ -112,23 +113,20 @@ enum status getState(){
 }
 
 void setCurrent(int i){
+        int voltage_dac;
 	current=i;
-	convertCurrent();
-	/*Hier moeten we ook de waarde in 1 keer doorsturen naar de comparator zodat die stroom aangepast wordt.*/
+        if (current == 0) {
+                i2c_shutdown_DAC();
+        } else{
+	        voltage_dac = convertCurrent();
+                i2c_write_DAC(voltage_dac);
+        }
 }
 
-void convertCurrent(){
-	//gebruik altijd een positieve stroom, op of ontladen is via relais 
-	int V_ADC=0; //in mV
-	int bits_geheel;
-	int V_bit=(int)5000.0/(pow(2.0,12));//in mV
-
-	//spanning in mV
-	V_ADC=2500+(int)(current*0.1);
-	bits_geheel=V_ADC/V_bit;
-
-	//bits_geheel moet nog omgezet worden naar een bitrij
-	//deze bitrij moeten we dan ofwel als output geven ofwel onder een variabele steken in het h-bestand
+int convertCurrent(){
+	// Gebruik altijd een positieve stroom, 
+        // op of ontladen is via relais 
+	return ((2500 + 0.3*current)*4096)/ VDD;
 }
 
 

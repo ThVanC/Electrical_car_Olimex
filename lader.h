@@ -6,6 +6,8 @@
 #define ON_OFF_PIN 28
 #define DISCHARGE_PIN 27
 
+#define VDD   5000   // Voedingsspanning
+
 /*****************************************/
 //
 //        COMBINATIES RELAISSTANDEN
@@ -44,7 +46,7 @@ enum status getState();
 
 //we geven een stroom door
 void setCurrent(int i);
-void convertCurrent();
+int convertCurrent();
 
 // Herbereken de SoC en update de waarde in de contoller
 // Om nauwkeurig te zijn moet deze functie regelmatig opgeroepen worden
