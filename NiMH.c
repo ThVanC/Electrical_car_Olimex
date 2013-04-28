@@ -21,7 +21,7 @@ int charge_NiMH(){
 	sleepTime_off.tv_sec = 5;
 	sleepTime_off.tv_nsec = 0;
 
-	while (on==1) {
+	while (getWork()==laden) {
 		V_bat=measureV();
 	
 		if(V_max<V_bat){

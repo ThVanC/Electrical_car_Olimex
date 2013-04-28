@@ -9,11 +9,12 @@ typedef struct{
     int capacity;       // Capaciteit van batterij (mAh)
 } battery;
 
-enum buzy{
-    load,
-    drive,
-    sleep
-}
+enum werk {
+	laden, 
+	rijden, 
+	wachten
+} bezigheid;
+
 
 battery specs;
 
@@ -24,7 +25,7 @@ int state_of_charge;//De batterijstatus uitgedrukt in  1,000,000 x procent
 int temperature;
 int max_temp=50;//de default maximum temperatuur van de wagen
 int load=0; //Deze waarde is een indicatie van hoe sterk de wagen mag opladen, als deze waarde positief is gaat de wagen opladen, anders ontladen. Uitgedrukt in milliwatt?
-buzy work=sleep;
+bezigheid work;
 pthread_mutex_t connection = PTHREAD_MUTEX_INITIALIZER;
 
 int getVoltage();
@@ -45,8 +46,11 @@ void alarm(int code);
 void startLoading();
 void startDriving();
 void startSleeping();
-buzy getWork();
-int connect();
+bezigheid getWork();
+void setWork(bezigheid b);
+void startConnecting();
+void stopConnecting();
+
 
 
 

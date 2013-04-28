@@ -125,8 +125,19 @@ void alarm(int code){
 	}
 }
 
-int connect(){
+void startConnecting(){
     pthread_mutex_unlock (&connection);
+}
+void stopConnecting(){
+	pthread_mutex_lock (&connection);
+}
+
+void setWork(bezigheid b){
+	work=b;
+}
+
+bezigheid getWork(){
+	return work;
 }
 
 
