@@ -22,6 +22,7 @@ enum werk {
 battery specs;
 
 enum buzy{
+	WAITPASS,
     LOAD,
     DRIVE,
     SLEEP
