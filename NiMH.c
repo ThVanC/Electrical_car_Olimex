@@ -1,8 +1,9 @@
 #include "lader.h"
 #include "gpio-mmap.h"
-#include "metingen.h"
+//#include "metingen.h"
 #include <stdio.h>
 #include "NiMH.h"
+#include "controller_car.h"
 #include <unistd.h>
 
 
@@ -15,18 +16,14 @@ int charge_NiMH(int socLoad){
 	int sleepTime,sleepTime_fin;
 	
 	init_V_max();
-	setCurrent(C);
+	setCurrentCharger(C);
 	// Slaaptijd tussen opeenvolgende metingen, in milliseconden
 	sleepTime = 100;
 	sleepTime_fin =5000;
 
-<<<<<<< HEAD
-	while (getWork()==laden) {
-=======
-	while (on==1 && charging==1) {
+	while (getState()==CHARGING) {
 		if (isAtChargeLimit(socLoad)) return 2;
->>>>>>> 83841f34cbb827163b7eac4b4807bd38a35a2112
-		V_bat=measureV();
+		V_bat=getVoltage();
 	
 		if(V_max<V_bat){
 			V_max=V_bat;
