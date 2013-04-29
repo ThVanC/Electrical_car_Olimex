@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include "controller_car.h"
 #include "metingen.h"
+#include "lader.h"
 #include <unistd.h>
 
 #ifndef CONTROLLER_CAR
@@ -152,6 +153,8 @@ bezigheid getWork(){
 
 int main(int argc, char* argv[]){
     // Initialisatie
+    initBatterySpecs(2, 4200, 3000, 2600);
+    setBatterijType(LiPo);
     
     do {
         // Meet alle grootheden en update via setters

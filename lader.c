@@ -147,8 +147,8 @@ int isAtChargeLimit(int load){
 }
 
 
-void setBatterijType(int v){
-	batterij_type = (enum type_batterij)(v);
+void setBatterijType(enum type_batterij v){
+	batterij_type = v;
 }
 
 

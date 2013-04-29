@@ -55,7 +55,7 @@ void updateStateofCharge();
 // Controleer of de batterij opgeladen is tot zijn limiet (SoC)
 int isAtChargeLimit(int load);
 
-void setBatterijType(int v);
+void setBatterijType(enum type_batterij v);
 char* getBatterijType();
 
 void chargeAlgorithm();
