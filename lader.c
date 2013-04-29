@@ -126,7 +126,7 @@ void setCurrent(int i){
 int convertCurrent(){
 	// Gebruik altijd een positieve stroom, 
         // op of ontladen is via relais 
-	return ((2500 + 0.3*current)*4096)/ VDD;
+	return ((2500 + 0.1*current)*4096)/ VDD;
 }
 
 
