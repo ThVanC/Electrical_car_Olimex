@@ -40,16 +40,16 @@ int measureI(){
     if (getState() == CHARGING) {
         // Bij opladen is de stroom in de batterij gelijk aan de stroom uit de lader
         // De rest van de schakeling wordt gevoed door de externe voeding
-        return current;
+        return currentCharger;
     }else {
         V_LRADC0=readLRADC0();
         V_Hall=(V_LRADC0*(R6 + R3)) / R6;
- 
+        
         curr=(V_Hall-2500)*10; //want 100mV/A => 10mA/mV
         if (getState() == DISCHARGING) {
             // Bij ontladen vloeit de ingestelde stroom weg uit de batterij
             // En een deel via de Hall sensor naar het circuit
-            return current + curr;
+            return currentCharger + curr;
         }else {
             // Alle stroom wordt onttrokken door het circuit
             return curr;
@@ -59,22 +59,22 @@ int measureI(){
 }
 
 int measureT(){
-        unsigned char msbyte, lsbyte;
-        int raw_temp;
-        i2c_read_temp(&msbyte, &lsbyte);
-        // Kap 5 lsb van LSByte af en tel op bij MSByte die 3 bits verschoven is
-        // AND om carry in 12e bit te verwijderen
-        raw_temp = ((lsbyte >> 5) + (msbyte << 3)) & 0x7FF;
-        
-        // Test 11e bit
-        if ((raw_temp & 0x400) != 0){
-                // 11e bit is 1 => negatieve temperatuur
-                return (raw_temp - 0x800)*TEMP_FRAC;
-        } else{
-                // 11e bit is 0 => positieve temperatuur
-                return (raw_temp)*TEMP_FRAC;
-        }
-
+    unsigned char msbyte, lsbyte;
+    int raw_temp;
+    i2c_read_temp(&msbyte, &lsbyte);
+    // Kap 5 lsb van LSByte af en tel op bij MSByte die 3 bits verschoven is
+    // AND om carry in 12e bit te verwijderen
+    raw_temp = ((lsbyte >> 5) + (msbyte << 3)) & 0x7FF;
+    
+    // Test 11e bit
+    if ((raw_temp & 0x400) != 0){
+        // 11e bit is 1 => negatieve temperatuur
+        return (raw_temp - 0x800)*TEMP_FRAC;
+    } else{
+        // 11e bit is 0 => positieve temperatuur
+        return (raw_temp)*TEMP_FRAC;
+    }
+    
 }
 #endif
 
@@ -90,18 +90,18 @@ int calculateStateofCharge(int* oldSoC, unsigned long *prevTime){
 	
 	// Controle van de pointers
 	if (oldSoC == NULL || prevTime == NULL) return -1;
-
+    
 	// Lees huidige spanning en stroom in
 	voltage = getVoltage();
     current = getCurrent();
-
+    
 #ifdef TEST
     printf("## SoC: Voltage = %d mV and total current = %d mA\n", voltage, current);
 #endif
 	// Lees huidige tijd in (milliseconden)
 	gettimeofday(&tv,NULL);
 	currentTime = tv.tv_sec * 1000 + tv.tv_usec/1000;
-
+    
 	// Bereken de periode tussen vorig en huidig sample
 	// Omzetten van milliseconden naar uur (1/(1000*60*60)
 	timePeriod = (int)(currentTime - *prevTime);
@@ -128,7 +128,7 @@ int calculateStateofCharge(int* oldSoC, unsigned long *prevTime){
         // used * 100 => procent, x 1000 niet nodig, want in [uAh]
 		newStateofCharge = *oldSoC + (used*100)/(specs.capacity);
 	}
-
+    
 	// Update 'vorige' waarden
 	*oldSoC = newStateofCharge;
 	*prevTime = currentTime;
