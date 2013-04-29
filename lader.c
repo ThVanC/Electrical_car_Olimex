@@ -112,10 +112,10 @@ enum status getState(){
     return status;
 }
 
-void setCurrent(int i){
+void setCurrentCharger(int i){
         int voltage_dac;
-	current=i;
-        if (current == 0) {
+        currentCharger=i;
+        if (currentCharger == 0) {
                 i2c_shutdown_DAC();
         } else{
 	        voltage_dac = convertCurrent();
@@ -126,7 +126,7 @@ void setCurrent(int i){
 int convertCurrent(){
 	// Gebruik altijd een positieve stroom, 
         // op of ontladen is via relais 
-	return ((2500 + 0.1*current)*4096)/ VDD;
+	return ((2500 + 0.1*currentCharger)*4096)/ VDD;
 }
 
 

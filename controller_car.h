@@ -30,6 +30,7 @@ enum buzy{
 void initBatterySpecs(int nr_of_cells, int volt_max_cell, int volt_min_cell, int capacity);
 
 int voltage;//De spanning over de batterij uitgedrukt in mV
+int current;
 int state_of_charge;//De batterijstatus uitgedrukt in  1,000,000 x procent
 int temperature;
 int max_temp=50;//de default maximum temperatuur van de wagen
@@ -41,8 +42,12 @@ enum buzy work = SLEEP;
 >>>>>>> 83841f34cbb827163b7eac4b4807bd38a35a2112
 pthread_mutex_t connection = PTHREAD_MUTEX_INITIALIZER;
 
+/* Getters en Setters voor Spanning, Stroom, SoC en Temperatuur */
 int getVoltage();
 void setVoltage(int i);
+
+int getCurrent();
+void setCurrent(int i);
 
 int getTemperature();
 void setTemperature(int i);
@@ -53,6 +58,7 @@ void setLoadFactor(int factor);
 
 int getStateOfCharge();
 void setStateOfCharge(int i);
+
 
 void alarm(int code);
 

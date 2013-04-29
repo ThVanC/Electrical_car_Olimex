@@ -1,5 +1,5 @@
 #include "LiPo.h"
-#include "metingen.h"
+//#include "metingen.h"
 #include "controller_car.h"
 #include <unistd.h>
 #include "lader.h"
@@ -33,11 +33,11 @@ int charge_LiPo(battery* spec, int socLoad){
 		if (isAtChargeLimit(socLoad)) return 2;
 
 		// Meet huidige spanning
-		voltage = measureV();
+		voltage = getVoltage();
 
 		// Stel de stroom in op 1 x C
 		current = 1*spec->capacity;
-		setCurrent(current);
+		setCurrentCharger(current);
 		
 		// Wacht enkele milliseconden vooraleer volgende meting uit te voeren.
 		usleep(sleepTime*1000);
@@ -45,8 +45,8 @@ int charge_LiPo(battery* spec, int socLoad){
 
 
 	// Meet nu zowel stroom als spanning
-	voltage = measureV();
-	current = measureI();
+	voltage = getVoltage();
+	current = getCurrent();
 
 	// Tweede fase:
 	// Laat de stroom afnemen.
@@ -63,10 +63,10 @@ int charge_LiPo(battery* spec, int socLoad){
 		
 		// Stel stroom in
 		current = spec->capacity*(1-(k/10));
-		setCurrent(current);
+		setCurrentCharger(current);
 
 		// Meet de nieuwe spanning
-		voltage = measureV();
+		voltage = getVoltage();
 
 		// Wacht enkele milliseconden tot volgende meting
 		usleep(sleepTime*1000);

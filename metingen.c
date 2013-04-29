@@ -92,8 +92,8 @@ int calculateStateofCharge(int* oldSoC, unsigned long *prevTime){
 	if (oldSoC == NULL || prevTime == NULL) return -1;
 
 	// Lees huidige spanning en stroom in
-	voltage = measureV();
-    current = measureI();
+	voltage = getVoltage();
+    current = getCurrent();
 
 #ifdef TEST
     printf("## SoC: Voltage = %d mV and total current = %d mA\n", voltage, current);
@@ -116,7 +116,7 @@ int calculateStateofCharge(int* oldSoC, unsigned long *prevTime){
 		newStateofCharge = 99999999;
 	}else if (voltage < specs.volt_min_cell*specs.nr_of_cells*(2-MARGE)){
 		// Batterij staat op laagste spanning
-        // 1% = 1000
+        // 1% = 1,000,000
 		newStateofCharge = 1000000;
 	} else{
 		// Bereken nieuwe SoC

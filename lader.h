@@ -21,7 +21,7 @@
 //
 /******************************************/
 
-int current; //uitgedrukt in mA
+int currentCharger; //uitgedrukt in mA
 //On: 1, off: 0
 int on;
 //Charging: 1, discharging: 0
@@ -45,7 +45,7 @@ enum status getState();
 
 
 //we geven een stroom door
-void setCurrent(int i);
+void setCurrentCharger(int i);
 int convertCurrent();
 
 // Herbereken de SoC en update de waarde in de contoller

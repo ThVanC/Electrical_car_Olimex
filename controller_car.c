@@ -1,5 +1,7 @@
 #include<stdio.h>
 #include "controller_car.h"
+#include "metingen.h"
+#include <unistd.h>
 
 #ifndef CONTROLLER_CAR
 #define CONTROLLER_CAR
@@ -18,6 +20,14 @@ void setVoltage(int i){
 	voltage=i;
 }
 
+int getCurrent(){
+    return current;
+}
+
+void setCurrent(int i){
+    current = i;
+}
+
 int getTemperature(){
 	return temperature;
 }
@@ -26,7 +36,7 @@ int getLoadFactor(){
 	return load;
 }
 
-int setLoadFactor(int factor){
+void setLoadFactor(int factor){
 	load=factor;
 }
 
@@ -138,6 +148,27 @@ void setWork(bezigheid b){
 
 bezigheid getWork(){
 	return work;
+}
+
+int main(int argc, char* argv[]){
+    // Initialisatie
+    
+    do {
+        // Meet alle grootheden en update via setters
+        
+        // Meet spanning
+        setVoltage(measureV());
+        // Meet stroom
+        setCurrent(measureI());
+        // Meet State of Charge
+        // Get en set in de functie
+        updateStateOfCharge();
+        // Meet temperatuur
+        setTemperature(measureT())
+        
+        // Slaap 500ms vooraleer nieuwe meting te doen
+        usleep(500*1000);
+    } while (true);
 }
 
 
