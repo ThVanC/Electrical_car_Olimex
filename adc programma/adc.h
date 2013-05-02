@@ -18,7 +18,7 @@ int initLRADC1();
 int readLRADC0();
 int readLRADC1();
 
-int* lradc_mmap;
+int *lradc_mmap;
 
 int *lradc_map() {
 	int fd;
