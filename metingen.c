@@ -24,7 +24,7 @@ int initMeasurements(){
 int measureV(){
 	int V_LRADC1,V_bat;//spanningen in mV
 	
-	V_LRADC1=readLRADC1();
+	V_LRADC1=convertToVoltage(readLRADC1());
 	V_bat=(V_LRADC1*(R4 + R5)) / R5; //236 owv 56+180 ; haakjes zo zetten zal best nauwkeurigheid geven
 	
 	return V_bat;
@@ -42,7 +42,7 @@ int measureI(){
         // De rest van de schakeling wordt gevoed door de externe voeding
         return currentCharger;
     }else {
-        V_LRADC0=readLRADC0();
+        V_LRADC0=convertToVoltage(readLRADC0());
         V_Hall=(V_LRADC0*(R6 + R3)) / R6;
         
         curr=(V_Hall-2500)*10; //want 100mV/A => 10mA/mV
