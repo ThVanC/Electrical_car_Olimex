@@ -52,7 +52,7 @@ int initLRADC0(){
 	//CTRL2
 	//printf("CTRL21: %d\n",lradc_rd(HW_LRADC_CTRL2));
 	//we kunnen maar meten tot een spanning van 1.85V. We hebben echter de functie V = 2.5V + 0.1V/A * I
-	lradc_wr(HW_LRADC_CTRL2_SET, LRADC0_DIVIDE_BY_2);
+	lradc_wr(HW_LRADC_CTRL2_CLR, LRADC0_DIVIDE_BY_2);
 	lradc_wr(HW_LRADC_CTRL2_SET, DISABLE_CTRL2);
 	lradc_wr(HW_LRADC_CTRL2_CLR, NO_DIVIDE2);
 	lradc_wr(HW_LRADC_CTRL2_CLR, TEMP_DISABLE);
@@ -140,9 +140,9 @@ int readLRADC0(){
 	//vb: value = value/20+20;
 
 	//omzetting spanning naar stroom
-	current = (int)((value*1.0-2.5)*100);
+	//current = (int)((value*1.0-2.5)*100);
 
-	return current;
+	return value;
 }
 
 int readLRADC1(){
@@ -176,16 +176,21 @@ int readLRADC1(){
 	return value;
 }
 
+int convertToVoltage(int value){
+	int output = 0.4604*value-25.239;
+	return output;
+}
+
 int main(){
 	initLRADC0();
-	int i;
-	for(i=0;i<100;i++){
-		printf("%d\n",readLRADC0());
-	}
-
 	initLRADC1();
 	int i;
 	for(i=0;i<100;i++){
-		printf("%d\n",readLRADC1());
+		printf("LRADC0-voltage: %d\n",convertToVoltage(readLRADC0()));
+		printf("LRADC1-voltage: %d\n",convertToVoltage(readLRADC1()));
+		//printf("LRADC0-voltage: %d\n",(readLRADC0()));
+		//printf("LRADC1-voltage: %d\n",(readLRADC1()));
 	}
+
+	
 }
