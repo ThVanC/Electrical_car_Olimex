@@ -89,7 +89,7 @@ int main(int argc,char *argv){
 	input=startClient(4931,poort,host);
 	while(input.connection<0){
 		input=startClient(4931, poort-2, upperhost);
-		sprintf(tekst,"[{\"remove_client\" : \"%s\"}]\n",buffer);
+		sprintf(tekst,"[{\"remove_laadpaal\" : \"%s\"}]\n",buffer);
 		error=send(input.socket1,tekst ,strlen(tekst),input.hints.ai_flags);
 		sprintf(tekst,"[{\"add_client\" : \"%s\"}]\n","tekst");
 		error=send(input.socket1,tekst ,strlen(tekst),input.hints.ai_flags);
@@ -120,7 +120,10 @@ int main(int argc,char *argv){
 		if(error<0){printf("problemen bij read (1), error nummer %i, boodschap: %s\n",error, gai_strerror(error));open=0;}
 		sprintf(tekst,"%s\r\n",json_object_to_json_string(SetVariables(buffer)));
 		error=send(socket1,tekst,strlen(tekst)*sizeof(char),hints.ai_flags/*18*/);
-		if(error<0){printf("problemen bij send, error nummer %i, boodschap: %s\n",error, gai_strerror(error));open=0;}
+		if(error<0){
+			printf("problemen bij send, error nummer %i, boodschap: %s\n",error, gai_strerror(error));
+			open=0;
+		}
 		
 	}
 	close(socket1);

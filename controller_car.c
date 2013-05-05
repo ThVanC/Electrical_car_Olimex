@@ -137,10 +137,10 @@ void alarm(int code){
 }
 
 void startConnecting(){
-    pthread_mutex_unlock (&connection);
+	pthread_mutex_lock (&connection);
 }
 void stopConnecting(){
-	pthread_mutex_lock (&connection);
+	 pthread_mutex_unlock (&connection);
 }
 
 void setWork(bezigheid b){
