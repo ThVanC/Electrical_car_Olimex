@@ -49,11 +49,11 @@ void setStateOfCharge(int i){
 	state_of_charge=i;
 }
 
-time_t getTime(){
+time_t getTimeLimit(){
 	return time;
 }
 
-time_t setTime(time_t t){
+time_t setTimeLimit(time_t t){
 	time=t;
 }
 
@@ -81,11 +81,11 @@ void setEnergy(int i){
 }
 
 int getCapacity(){
-	return capacity;
+	return battery.capacity;
 }
 
 void setCapacity(int i){
-	capacity=i;
+	battery.capacity=i;
 }
 
 int getMaxLoad(){
@@ -96,12 +96,6 @@ void setMaxLoad(int i){
 	max_load=i;
 }
 
-int getMaxUnload(){
-	return max_unload;
-}
-void setMaxUnload(int i){
-	max_unload=i;
-}
 
 
 void setTemperature(int i){

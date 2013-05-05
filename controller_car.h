@@ -36,6 +36,10 @@ int state_of_charge;//De batterijstatus uitgedrukt in  1,000,000 x procent
 int temperature;
 int max_temp=50;//de default maximum temperatuur van de wagen
 int load=0; //Deze waarde is een indicatie van hoe sterk de wagen mag opladen, als deze waarde positief is gaat de wagen opladen, anders ontladen. Uitgedrukt in milliwatt?
+time_t time;
+int distance;
+int max_energy_per_distance;
+int energy;
 <<<<<<< HEAD
 bezigheid work;
 =======
