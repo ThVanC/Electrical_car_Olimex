@@ -47,16 +47,6 @@ int *gpio_map() {
 		fd=0;
 }
 
-int gpio_rd(long offset) {
-	return gpio_mmap[offset/4];
-}
-
-void gpio_wr(long offset, long value) {
-	gpio_map();
-	gpio_output(bank
-	gpio_mmap[offset/4] = value;
-}
-
 void gpio_output(int bank, int pin) {
 	gpio_mmap[0x1C1 + (bank*4)] = 1 << pin;
 }
@@ -65,6 +55,11 @@ void gpio_input(int bank, int pin) {
 	gpio_mmap[0x1C2 + (bank*4)] = 1 << pin;
 }
 
+
+void gpio_rd(long offset){
+	offset = offset - GPIO_BASE;
+	return gpio_mmap[offset/4];
+}
 
 /****************************************
 
@@ -78,20 +73,4 @@ void gpio_wr_eigen(long offset, long value){
 	gpio_mmap[offset/4] = value;
 }
 
-/*
-Een voorbeeld om een willekeurige GPIO-pin aan te struren
-void initLCD2(){
-   //multiplexen.
-   gpio_wr_eigen(HW_PINCTRL_MUXSEL2_SET, 0b00000000000000000000000000110000);
-   //stroomsterkte instellen.
-   gpio_wr_eigen(HW_PINCTRL_DRIVE4_SET,  0b00000000000000000000000100000000);
-   //idem.
-   gpio_wr_eigen(HW_PINCTRL_DRIVE4_CLR,  0b00000000000000000000001000000000);
-   //gpio_wr_eigen(HW_PINCTRL_PULL1_SET,   0b00000000000001000000000000000000);
-   //zorgen dat hij niet als input fungeert.
-   gpio_wr_eigen(HW_PINCTRL_DIN1_CLR,    0b00000000000000000000000000000100);
-   //als output werken.
-   gpio_wr_eigen(HW_PINCTRL_DOE1_SET,    0b00000000000000000000000000000100);
-}
-*/
 #endif
