@@ -79,7 +79,7 @@ void *doeiets(void* erin){
 int main(){ 
 	struct arg *argument=malloc(sizeof argument);
 	struct arg tijdelijk;
-	int socket2;
+	int socket2,error;
 	void *buffer=malloc(bufferlengte*sizeof(char));
 	struct addrinfo hints;
 	struct sockaddr_storage client_addr;
@@ -89,7 +89,11 @@ int main(){
 	init();
 	input=startServer(poort_centrale_server,host_centrale_server);
 	while(1){
+		memset(&client_addr, 0, sizeof(client_addr));
+		clilen=16;
 		socket2=accept(input.socket1, (struct sockaddr *)&client_addr, &clilen);
+		error=bind(socket2, input.hints.ai_addr, input.hints.ai_addrlen);
+		printf("bindig: %i\n",error);
 		if(socket2<0){printf("problemen bij accept, error nummer %i, boodschap: %s\n",socket2, gai_strerror(socket2));return -5;}
 		tijdelijk.socket1=socket2;
 		tijdelijk.hints=hints;

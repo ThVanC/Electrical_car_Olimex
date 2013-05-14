@@ -54,9 +54,11 @@ void *doeiets(void* erin){
 	socklen_t clilen;
 	struct arg server;	
 	int open=1;
+	int useport=input.connection;
 
 	socket2=accept(input.socket1, (struct sockaddr *)&client_addr, &clilen);
-	server=startClient(poort-1,poort_centrale_server,host_centrale_server);
+	printf("onze poort: %i\n",useport);
+	server=startClient(2*poort-useport-4,poort_centrale_server,host_centrale_server);
 	if(socket2<0){printf("problemen bij accept van client, error nummer %i, boodschap: %s\n",socket2, gai_strerror(socket2));return 0;}
 	while(open){
 		error=read(server.socket1,buffer,255);
@@ -81,7 +83,7 @@ void *doeiets(void* erin){
 
 int main(){ 
 	struct arg *argument=malloc(sizeof argument);
-	int error, socket2, *useport=(int*)malloc(sizeof(int));
+	int error, socket2, useport;
 	char *tekst=malloc(tekstlengte*sizeof(char));
 	void *buffer=malloc(bufferlengte*sizeof(char));
 	struct addrinfo hints;
@@ -92,7 +94,7 @@ int main(){
 	init();
 	input=startServer(poort, me);
 	masterSlave(input);
-	*useport=poort+1;
+	useport=poort+1;
 	while(1){
 		error=listen(input.socket1, 5);
 		if(error<0){printf("problemen bij listen, error nummer %i, boodschap %s\n", error, gai_strerror(error));return -4;}
@@ -100,11 +102,13 @@ int main(){
 		socket2=accept(input.socket1, (struct sockaddr *)&client_addr, &clilen);
 		if(socket2<0){printf("problemen bij accept, error nummer %i, boodschap: %s\n",socket2, gai_strerror(socket2));return -5;}
 		
-		*useport=(*useport-poort)%max_poort+1+poort;
-		sprintf(tekst,"%i\r\n",*useport);
+		useport=(useport-poort)%max_poort+1+poort;
+		sprintf(tekst,"%i\r\n",useport);
 		error=send(socket2,tekst,strlen(tekst)*sizeof(char),hints.ai_flags);
 		if(error<0)printf("problemen bij verzenden van hetpakket\n");
-		*argument=startServer(*useport, me);
+		*argument=startServer(useport, me);
+		argument->connection=useport;
+		printf("De poort voor he oproepen van de thread_create %i %i",useport,argument->connection);
 		pthread_create(&thr,NULL,doeiets, (void*)argument);
 		close(socket2);
 	}

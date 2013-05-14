@@ -46,6 +46,7 @@ struct arg startClient(int eigenpoort, int anderepoort, char* host){
 	connection=-1;
 	error=bind(socket1, hints.ai_addr, hints.ai_addrlen);
 	if(error<0){printf("problemen bij bind, error nummer %i, boodschap: %s\n",error, gai_strerror(error));return terug;}
+	printf("problemen bij de connectie? dan is de schuldige host %s met poortnummer %i en ik heb gezonden vanaf poort %i\n",host, anderepoort, eigenpoort);
 	connection=connect(socket1, info->ai_addr, info->ai_addrlen);
 	if(connection<0){printf("problemen met connectie\n");}
 	terug.connection=connection;

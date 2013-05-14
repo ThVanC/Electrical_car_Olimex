@@ -81,15 +81,15 @@ int main(int argc,char *argv){
 	init();
 	char* ontvangen;
 
-	input=startClient(50000, poort-2, upperhost);
+	input=startClient(4941, poort-2, upperhost);
 	sprintf(tekst,"[{\"add_client\" : \"%s\"}]\n","tekst");
 	error=send(input.socket1,tekst ,strlen(tekst),input.hints.ai_flags);
 	error=read(input.socket1, buffer, 255);
 	host=giveHost(buffer);
 	close(input.socket1);
-	input=startClient(50100,poort,host);
+	input=startClient(4941,poort,host);
 	while(input.connection<0){
-		input=startClient(50000, poort-2, upperhost);
+		input=startClient(4941, poort-2, upperhost);
 		sprintf(tekst,"[{\"remove_client\" : \"%s\"}]\n",buffer);
 		error=send(input.socket1,tekst ,strlen(tekst),input.hints.ai_flags);
 		sprintf(tekst,"[{\"add_client\" : \"%s\"}]\n","tekst");
@@ -97,14 +97,14 @@ int main(int argc,char *argv){
 		error=read(input.socket1, buffer, 255);
 		host=giveHost(buffer);
 		close(input.socket1);
-		input=startClient(50100,poort,host);
+		input=startClient(4941,poort,host);
 	}
 	error=read(input.socket1,buffer,255);
 	if(error<0){printf("problemen bij read (1), error nummer %i, boodschap: %s\n",error, gai_strerror(error));return -5;}
 	nieuwepoort=atoi(buffer);
 	close(input.socket1);
 
-	input=startClient(50200,nieuwepoort,host);
+	input=startClient(4943,nieuwepoort,host);
 	while(open){
 		error=read(input.socket1,buffer,255);
 		if(error<0){printf("problemen bij read (1), error nummer %i, boodschap: %s\n",error, gai_strerror(error));open=0;}
