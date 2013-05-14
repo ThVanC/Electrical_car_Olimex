@@ -3,7 +3,7 @@
 
 // Definitie weerstandswaarden (kOhm)
 #define R3	220
-#define R4	180
+#define R4	330
 #define R5	56
 #define R6	120
 
@@ -20,7 +20,7 @@ int measureV();
 int measureI();
 
 //temperatuursmeting
-//uitgedrukt in °C
+//uitgedrukt in ï¿½C
 int measureT();
 
 // Bepaal de nieuwe State of Charge in procent op basis van vorige waarden
