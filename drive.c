@@ -1,5 +1,7 @@
 #include "drive.h"
-#include "pwm-mmap.h"
+#include "pin_config.h"
+#include "imx233.h"
+#include <stdio.h>
 
 #ifndef DRIVE
 #define DRIVE
@@ -7,121 +9,120 @@
 #define MINIMALE_SNELHEID 0
 #define MAXIMALE_SNELHEID 20
 
+
+/**************************
+
 //hier moeten de periode, de (in)active en de periode deler nog aangepast worden.
 
+***************************/
 int initDrive(){
 	// Change the function of the processor pins
 	// deze zet pinnen 26 en 27 op bank 1 op pwm0 en pwm1.
 
-	gpio_map();
-	printf("gpio_map klaar \n");
-	pwm_map();
-	printf("pwm_map klaar \n");
-	gpio_wr_eigen(HW_PINCTRL_MUXSEL3_CLR, 0x00f00000);
-	gpio_wr_eigen(HW_PINCTRL_DIN1_CLR,	  0x06000000);
-	gpio_wr_eigen(HW_PINCTRL_DOE1_SET,	  0x06000000);
 
 	printf("multiplexing klaar \n");
-   
-	forward();
+	initLCD6();
+	initLCD7();
+	initLCD8();
+	initLCD9();
+	initLCD10();
+	initLCD11();
+	initLCD12();
+	initLCD13();
+	initLCD14();
+	moveForward();
 	printf("forward klaar \n");
 	speed(0);
 	printf("rijden klaar \n");
 }
 
+
+/**************************
+
+Stel de servo in op forward. De periode is 20 ms en het signaal moet 1.5ms hoog staan.
+
+***************************/
 int moveForward(){
-	
-   // Set the duty cycle
-   //imx233_wr(HW_PWM_ACTIVE1, 0x000008ca);
-	//pwm_wr(HW_PWM_ACTIVE1, 0b00000010100000000000000101000000);
-	//pwm_wr(HW_PWM_ACTIVE1, 0x02800140);
-	//pwm_wr(HW_PWM_ACTIVE1_SET, 0b00000010100000000000000101000000);
-	//pwm_wr(HW_PWM_ACTIVE1_CLR, 0b11111101011111111111111010111111);
-	pwm_wr(HW_PWM_ACTIVE2_SET, 0b00001100100000000000011001000000);
-	pwm_wr(HW_PWM_ACTIVE2_CLR, 0b11110011011111111111100110111111);
-
-   // Set the period
-   //imx233_wr(HW_PWM_PERIOD1, 0x004b7530);
-	//periode wordt 640
-	//pwm_wr(HW_PWM_PERIOD1, 0b00000000000010110000001010000000);
-	//b0280
-	//pwm_wr(HW_PWM_PERIOD1, 0b00000000000010110000001010000000);
-	//pwm_wr(HW_PWM_PERIOD1_SET, 0b00000000000010110000001010000000);
-	//pwm_wr(HW_PWM_PERIOD1_CLR, 0b00000001111100001111110101111111);
-	pwm_wr(HW_PWM_PERIOD2_SET, 0b00000000000010110000110010000000);
-	pwm_wr(HW_PWM_PERIOD2_CLR, 0b00000001111100001111001101111111);
-   
-   // Enable the PWM output
-   //pwm_wr(HW_PWM_CTRL_SET, 0x06000002);
-   //pwm_wr(HW_PWM_CTRL_CLR, 0b11111000000000000000000000011100);
-   pwm_wr(HW_PWM_CTRL_SET, 0x06000004);
-   pwm_wr(HW_PWM_CTRL_CLR, 0b11111000000000000000000000011011);
+	clrLCD6();
+	setLCD7();
+	clrLCD8();
+	clrLCD9();
 }
 
+/**************************
+
+Stel de servo in op 90° left. De periode is 20 ms en het signaal moet 1ms hoog staan.
+
+***************************/
 int moveLeft(){
-
-   // Set the duty cycle
-	//we kiezen 3/4 van de periode voor forward. Dit moet wel nog allemaal geverifieerd worden!
-   pwm_wr(HW_PWM_ACTIVE1, 0x000005dc);
-   
-   // Set the period
-   pwm_wr(HW_PWM_PERIOD1, 0x004b7530);
-   
-   // Enable the PWM output
-   pwm_wr(HW_PWM_CTRL_SET, 0x06000002);
+	setLCD6();
+	clrLCD7();
+	clrLCD8();
+	clrLCD9();
 }
 
+/**************************
+
+Stel de servo in op 90° right. De periode is 20 ms en het signaal moet 2ms hoog staan.
+
+***************************/
 int moveRight(){
-	//We kiezen 5/4 van de periode van forward. Verifieren!!
-   // Set the duty cycle
-   pwm_wr(HW_PWM_ACTIVE1, 0x00000bb8);
-   
-   // Set the period
-   pwm_wr(HW_PWM_PERIOD1, 0x004b7530);
-   
-   // Enable the PWM output
-   pwm_wr(HW_PWM_CTRL_SET, 0x06000002);
+	clrLCD6();
+	clrLCD7();
+	clrLCD8();
+	setLCD9();
 }
 
+/**************************
+
+Stel de snelheid hier in. 
+De ESC werkt aan een frequentie van 50Hz. Wederom signaal tussen de 1ms (stilstaan) en 2 ms (plank gas!) instellen.
+
+***************************/
 int speed(int s){
-	//Hier moet de periode, active,... nog bepaald worden.
-	unsigned int waarde, tijd;
-	if(s < MINIMALE_SNELHEID )
-		waarde = MINIMALE_SNELHEID;
-	else if(s > MAXIMALE_SNELHEID )
-		waarde = MAXIMALE_SNELHEID;
-	else waarde = s;
-	
-	//Hier moeten we oppassen omdat we een signed int in een unsigned gaan steken, blabla. Gewoon unsigned gebruiken. Dan is er zeker geen interpretatiefout voor de tekenbit want registers zijn unsigned
-	tijd = (int)((waarde - MINIMALE_SNELHEID)*1.0*(1500.0)/(MAXIMALE_SNELHEID*1.0-MINIMALE_SNELHEID*1.0)+1500.0);
-	//bron is wikipedia:
-	//wanneer we hem niet willen laten draaien, moeten we de breedte op 1ms instellen. De breedte kan variëren van 1ms->2ms. 
-	// Set the duty cycle
-	/*pwm_wr(HW_PWM_ACTIVE0, 0x02800140);
-   
-	// Set the period
-	pwm_wr(HW_PWM_PERIOD0, 0b00000000000010110000001010000000);
-   
-	// Enable the PWM output
-	pwm_wr(HW_PWM_CTRL_SET, 0x06000001);
-	pwm_wr(HW_PWM_CTRL_CLR, 0b11000000000000000000000000000000);
-	00000010100000000000000101000000*/
-	//pwm_wr(HW_PWM_ACTIVE0, 0x02800140);
-	pwm_wr(HW_PWM_ACTIVE0_SET, 0b00000010100000000000000101000000);
-	pwm_wr(HW_PWM_ACTIVE0_CLR, 0b11111101011111111111111010111111);
-   
-   // Set the period
-   //imx233_wr(HW_PWM_PERIOD1, 0x004b7530);
-	//periode wordt 640
-	//pwm_wr(HW_PWM_PERIOD1, 0b00000000000010110000001010000000);
-	//b0280
-	//pwm_wr(HW_PWM_PERIOD1, 0b00000000000010110000001010000000);
-	pwm_wr(HW_PWM_PERIOD0_SET, 0b00000000000010110000001010000000);
-	pwm_wr(HW_PWM_PERIOD0_CLR, 0b00000001111100001111110101111111);
-   
-   // Enable the PWM output
-   pwm_wr(HW_PWM_CTRL_SET, 0x06000001);
-   pwm_wr(HW_PWM_CTRL_CLR, 0b11111000000000000000000000011100);
+	int par1 = (int)(MINIMALE_SNELHEID), par2 = (int)( MAXIMALE_SNELHEID/4), par3 = (int) ((MAXIMALE_SNELHEID/2)), par4= (int)((3*MAXIMALE_SNELHEID/4));
+	if(s<0){
+		clrLCD6();
+		clrLCD7();
+		setLCD8();
+		clrLCD9();
+		clrLCD10();
+		clrLCD11();
+		clrLCD12();
+		clrLCD13();
+		clrLCD14();
+		return 1;
+	}
+	printf("Par1: %d\nPar2: %d\nPar3: %d\nPar4: %d\n",par1,par2,par3,par4);
+	if(par1 <= s && s <= par2){
+		printf("1 ledje\t%d\n",s);
+		setLCD10();
+		clrLCD11();
+		clrLCD12();
+		clrLCD13();
+		clrLCD14();
+	}else if(par2< s && s <= par3){
+		printf("2 ledjes\t%d\n",s);
+		setLCD10();
+		setLCD11();
+		clrLCD12();
+		clrLCD13();
+		clrLCD14();
+	}else if(par3 < s && s <= par4){
+		printf("3 ledjes\t%d\n",s);
+		setLCD10();
+		setLCD11();
+		setLCD12();
+		clrLCD13();
+		clrLCD14();
+	}else{
+		printf("4 ledjes\t%d\n",s);
+		setLCD10();
+		setLCD11();
+		setLCD12();
+		setLCD13();
+		setLCD14();
+	}
 }
 
 #endif

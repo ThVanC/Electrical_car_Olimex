@@ -11,6 +11,11 @@
 #include <stdio.h>
 #include "GPS.h"
 
+/****************************
+
+Dit is een testfunctie om de module GPS te gaan testen.
+
+****************************/
 int main(int argc, char** args){
     printf("Initialize GPS DATA\n\n");
     initGPS();

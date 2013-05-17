@@ -14,6 +14,11 @@
 #define MARGE 0.99
 #define TEMP_FRAC 125
 
+/*******************
+
+Het initialiseren van alle testcomponenten + de tijd van het bordje beginnen bijhouden. Dit gaat belangrijk zijn voor het bepalen van de soc. De LRADC's worden geinitialiseerd. De logica zit in adc.c
+
+*******************/
 #ifndef TEST
 int initMeasurements(){
 	initLRADC0();
@@ -21,18 +26,28 @@ int initMeasurements(){
 	//klopt het dat we voor i²c niets moeten initialiseren
 }
 
+/*******************
+
+De spanning over de batterij uitlezen. Deze ga je moeten halen uit de aparte adc. (16 mei: deze is nog niet geplaatst!! Vraag aan de begeleiders wat je moet doen!)
+Deze werd oorspronkelijk uit LRADC1 gelezen, maar nu moet je die uit een ADC halen mbv I²C.
+
+*******************/
 int measureV(){
 	int V_LRADC1,V_bat;//spanningen in mV
-	
+	//de LRADC geeft geen spanning maar een gewone waarde terug die omgezet moet worden.
 	V_LRADC1=convertToVoltage(readLRADC1());
 	V_bat=(V_LRADC1*(R4 + R5)) / R5; //236 owv 56+180 ; haakjes zo zetten zal best nauwkeurigheid geven
 	
 	return V_bat;
 }
 
-// Bereken de stroom
-// Positief is naar de batterij
-// negatief weg van de batterij
+/*******************
+
+Bereken de stroom
+Positief is naar de batterij
+Negatief weg van de batterij
+
+*******************/
 int measureI(){
 	int V_LRADC0,V_Hall;//spanningen in mV
 	int curr;//stromen in mA
@@ -58,6 +73,11 @@ int measureI(){
     }
 }
 
+/*******************
+
+De temperatuur uit de sensor meten. Deze moet mbv i2c bediend worden.
+
+*******************/
 int measureT(){
     unsigned char msbyte, lsbyte;
     int raw_temp;
@@ -78,6 +98,11 @@ int measureT(){
 }
 #endif
 
+/*******************
+
+State of charge aanpassen op basis van de tijd tussen 2 metingen en de stroom die er op dat ogenblik gemeten wordt. De stroom wordt met de hallsensor bepaald.
+
+*******************/
 int calculateStateofCharge(int* oldSoC, unsigned long *prevTime){
 	
 	// Definieer variabelen

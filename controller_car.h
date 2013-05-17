@@ -56,6 +56,7 @@ void setCurrent(int i);
 
 int getTemperature();
 void setTemperature(int i);
+int getMaxTemperature();
 void setMaxTemperature(int i);
 
 int getLoadFactor();
@@ -82,6 +83,8 @@ int connect();
 >>>>>>> 83841f34cbb827163b7eac4b4807bd38a35a2112
 
 
+void initCar();
 
+int testCC();
 
 #endif

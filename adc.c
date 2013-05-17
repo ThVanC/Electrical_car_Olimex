@@ -1,8 +1,8 @@
 #include "adc.h"
 #include "imx233.h"
-#include "imx233.c"
 
 //voor meer informatie zie imx233RM.pdf hoofdstuk over de LRADC
+//Vele disables zijn vaak functies die de LRADC aanbiedt, maar die niet nodig zijn. Bijvoorbeeld temperatuurmeting,...
 #define LRADC0_DIVIDE_BY_2	0x01000000
 #define LRADC1_DIVIDE_BY_2	0x02000000
 #define NO_ACCUMULATION		0x20000000 
@@ -31,7 +31,11 @@
 #define SELECT_C_0_1		0b00000000000000000000000000010000
 #define CTRL4_CLEAR			0b11111111111111111111111111101111
 
+/*******************
 
+LRADC0 goed instellen. 
+
+*******************/
 int initLRADC0(){
 	lradc_map();
 
@@ -53,7 +57,7 @@ int initLRADC0(){
 	//CTRL2
 	//printf("CTRL21: %d\n",lradc_rd(HW_LRADC_CTRL2));
 	//we kunnen maar meten tot een spanning van 1.85V. We hebben echter de functie V = 2.5V + 0.1V/A * I
-	lradc_wr(HW_LRADC_CTRL2_SET, LRADC0_DIVIDE_BY_2);
+	lradc_wr(HW_LRADC_CTRL2_CLR, LRADC0_DIVIDE_BY_2);
 	lradc_wr(HW_LRADC_CTRL2_SET, DISABLE_CTRL2);
 	lradc_wr(HW_LRADC_CTRL2_CLR, NO_DIVIDE2);
 	lradc_wr(HW_LRADC_CTRL2_CLR, TEMP_DISABLE);
@@ -73,6 +77,11 @@ int initLRADC0(){
 	return 1;
 }
 
+/*******************
+
+LRADC1 goed instellen
+
+*******************/
 int initLRADC1(){
 	lradc_map();
 
@@ -114,19 +123,24 @@ int initLRADC1(){
 	return 1;
 }
 
+/*******************
+
+De waarde uit LRADC0 uitlezen.
+
+*******************/
 int readLRADC0(){
 	int value=0, current;
 
-	imx233_wr(HW_LRADC_CTRL1_CLR, LRADC0_IRQ_PENDING);
+	lradc_wr(HW_LRADC_CTRL1_CLR, LRADC0_IRQ_PENDING);
 	
-	while ( !(imx233_rd(HW_LRADC_CTRL1) & LRADC0_IRQ_PENDING) ){
+	while ( !(lradc_rd(HW_LRADC_CTRL1) & LRADC0_IRQ_PENDING) ){
 		// Schedule a conversion on ch 1
-		imx233_wr(HW_LRADC_CTRL0_CLR, CH1_SCHEDULE);
-		imx233_wr(HW_LRADC_CTRL0_SET, CH0_SCHEDULE);
+		lradc_wr(HW_LRADC_CTRL0_CLR, CH1_SCHEDULE);
+		lradc_wr(HW_LRADC_CTRL0_SET, CH0_SCHEDULE);
 		//printf( "conversion scheduled...\n" );
 
 		// Wait for schedule bit to be cleared, indicating conversion complete
-		while ( (imx233_rd(HW_LRADC_CTRL0) & CH0_SCHEDULE) ) { }
+		while ( (lradc_rd(HW_LRADC_CTRL0) & CH0_SCHEDULE) ) { }
 		//printf( "conversion complete.\n" );
 
 		// The next line is a hack. I've found that the data is somtimes not
@@ -135,30 +149,37 @@ int readLRADC0(){
 		usleep(100);	  
 	}
 	//18 bits bevatten de waarde.
-	value = imx233_rd(HW_LRADC_CH0) & 0x3ffff;
+	value = lradc_rd(HW_LRADC_CH0) & 0x3ffff;
 
 	//hier moet nog een omzetting komen naar mV
 	//vb: value = value/20+20;
 
 	//omzetting spanning naar stroom
-	current = (int)((value*1.0-2.5)*100);
+	//current = (int)((value*1.0-2.5)*100);
 
-	return current;
+	return value;
 }
 
+/*******************
+
+De waarde uit LRADC1 uitlezen
+
+*******************/
 int readLRADC1(){
 	int value=0;
 
-	imx233_wr(HW_LRADC_CTRL1_CLR, LRADC1_IRQ_PENDING);
+	lradc_wr(HW_LRADC_CTRL1_CLR, LRADC1_IRQ_PENDING);
 
-	while ( !(imx233_rd(HW_LRADC_CTRL1) & LRADC1_IRQ_PENDING) ){
+	while ( !(lradc_rd(HW_LRADC_CTRL1) & LRADC1_IRQ_PENDING) ){
 		// Schedule a conversion on ch 1
-		imx233_wr(HW_LRADC_CTRL0_CLR, CH0_SCHEDULE);
-		imx233_wr(HW_LRADC_CTRL0_SET, CH1_SCHEDULE);
+		lradc_wr(HW_LRADC_CTRL0_CLR, CH0_SCHEDULE);
+		lradc_wr(HW_LRADC_CTRL0_SET, CH1_SCHEDULE);
 		//printf( "conversion scheduled...\n" );
 
 		// Wait for schedule bit to be cleared, indicating conversion complete
-		while ( (imx233_rd(HW_LRADC_CTRL0) & CH1_SCHEDULE) ) { }
+		while ( (lradc_rd(HW_LRADC_CTRL0) & CH1_SCHEDULE) ) {
+			//printf("wait a minute");
+		}
 		//printf( "conversion complete.\n" );
 
 		// The next line is a hack. I've found that the data is somtimes not
@@ -167,10 +188,67 @@ int readLRADC1(){
 		usleep(100);	  
 	}
 	//18 bits bevatten de waarde.
-	value = imx233_rd(HW_LRADC_CH1) & 0x3ffff;
+	value = lradc_rd(HW_LRADC_CH1) & 0x3ffff;
 
 	//hier moet nog een omzetting komen naar mV
 	//vb: value = value/20+20;
 
 	return value;
+}
+
+/*******************
+
+Deze functie is empirisch bepaald. De spanning staat in functie van de waarde van de LRADC weergeven.
+
+*******************/
+int convertToVoltage(int value){
+	int output = 0.4604*value-25.239;
+	return output;
+}
+
+/*******************
+
+Memorymapping maken
+
+*******************/
+int *lradc_map() {
+	int fd;
+	if (lradc_mmap != 0) return;
+		fd = open("/dev/mem", O_RDWR);
+	if( fd < 0 ) {
+		perror("Unable to open /dev/mem");
+		fd = 0;
+	}
+
+	lradc_mmap = mmap(0, 0xfff, PROT_READ|PROT_WRITE, MAP_SHARED, fd, HW_LRADC_CTRL0);
+	if( -1 == (int)lradc_mmap) {
+		perror("Unable to mmap file");
+		lradc_mmap = 0;
+	}
+	if( -1 == close(fd))
+		perror("Couldn't close file");
+	fd=0;
+}
+
+/*******************
+
+Lezen op een bepaalde offset voor de verschillende registers van de LRADC
+
+*******************/
+int lradc_rd(long offset) {
+	offset = offset - HW_LRADC_CTRL0;
+	return lradc_mmap[offset/4];
+}
+
+
+/****************************************
+
+Maak gebruik van de adressen die in imx233.h staan om de pwm te gaan gebruiken. 
+De functie zal namelijk de PWM_BASE offset ervan aftrekken.
+Merk op! Gebruik aub enkel adressen die overeenkomen met een register dat te maken heeft met PWM-controle (H37). Voor andere doeleinde maak je beste en nieuwe memory mapping.
+
+****************************************/
+void lradc_wr(long offset, int value) {
+	offset=offset - HW_LRADC_CTRL0;
+	lradc_mmap[offset/4] = value;
 }

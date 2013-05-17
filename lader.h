@@ -72,4 +72,6 @@ void charge();
 void discharge();
 int isCharging();
 
+int init();
+
 #endif

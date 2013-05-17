@@ -8,6 +8,11 @@
 
 int* pwm_mmap;
 
+/*****************************
+
+Maak een pwm memory mapping aan.
+
+*****************************/
 int *pwm_map() {
 	int fd;
 	if (pwm_mmap != 0) return;
@@ -27,7 +32,14 @@ int *pwm_map() {
 	fd=0;
 }
 
+
+/*****************************
+
+We gaan op een bepaald adres gaan wegschrijven
+
+*****************************/
 int pwm_rd(long offset) {
+	offset = offset - HW_PWM_CTRL;
 	return pwm_mmap[offset/4];
 }
 

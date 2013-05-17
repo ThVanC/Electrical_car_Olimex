@@ -6,11 +6,21 @@
 #include "controller_car.h"
 #include <unistd.h>
 
+/*******************
 
+Het initialiseren van de maximale spanning die over een batterij mag staan.
+Deze waarde moet hard gecodeerd worden.
+
+*******************/
 void init_V_max(){
 	V_max=0;
 }
 
+/*******************
+
+Eens hij aan het algoritme begonnen is, gaat hij het blijven volhouden tot hij klaar is met laden tenzij de state aangepast wordt. 
+
+*******************/
 int charge_NiMH(int socLoad){
 	int V_bat;
 	int sleepTime,sleepTime_fin;

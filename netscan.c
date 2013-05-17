@@ -7,18 +7,33 @@
 #ifndef NETSCAN
 #define NETSCAN
 
+/********************
+
+wifi interface inorde zetten.
+
+********************/
 int init(){
 	system("ifconfig wlan0 up");
 	//wpa supplicant wordt bij het effectief connecteren pas opgeroepen.
 	//https://bbs.archlinux.org/viewtopic.php?id=43818 check deze website hiervoor!
 }
 
+/********************
+
+scannen van alle zichtbare netwerken
+
+********************/
 int netscan(){
 	system("sudo su");
 	system("rootPass");
 	system("sudo iwlist wlan0 scan | grep -E \'Address|ESSID\' | awk -F \\\"  \'BEGIN{RS=\"Cell\";FS=\"\\n\"}{print $1 \";\" $2}\' | grep -E \'[0-9|A-F]\' | sed \'s/[0-9][0-9] - Address: //\' | sed \'s/[ |\t]* ESSID:/ /\' > bestand.txt ");
 }
 
+/********************
+
+Een rij van alle netwerken krijgen
+
+********************/
 char** getNetworks(){
 
 	//geef hier enkel de netwerken die beginnen met laadpaal, de andere worden genegeerd. 
@@ -65,6 +80,11 @@ char** getNetworks(){
 	return netwerken;
 }
 
+/********************
+
+Aantal zichtbare netwerken weergeven.
+
+********************/
 int getAantalNetwerken(){
 	FILE* fr;
 	char line[80];
@@ -81,6 +101,12 @@ int getAantalNetwerken(){
 	return aantal_netwerken;
 }
 
+
+/********************
+
+Toetreden tot een bepaald netwerk
+
+********************/
 char* chooseNetwork(){
 	int aantal_netwerken = 0, scanned_networks = 0;
 	int index;

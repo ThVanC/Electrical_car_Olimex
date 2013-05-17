@@ -7,6 +7,26 @@
 #ifndef CONTROLLER_CAR
 #define CONTROLLER_CAR
 
+/*******************
+
+De waarden in controleer_car gaan initialiseren.
+
+*******************/
+void initCar(){
+	voltage=0;			//De spanning over de batterij uitgedrukt in mV
+	current=0;			//De gemetenstroom
+	state_of_charge=0;	//De batterijstatus uitgedrukt in  1,000,000 x procent
+	temperature=0;		//De temperatuur van de batterij
+	max_temp=0;			//de default maximum temperatuur van de wagen
+	load=0;
+	work = wachten;
+}
+
+/*******************
+
+De batterij specificatie gaan instellen.
+
+*******************/
 void initBatterySpecs(int nr_of_cells, int volt_max_cell, int volt_min_cell, int capacity){
     specs.capacity = capacity;
     specs.nr_of_cells = nr_of_cells;
@@ -14,37 +34,92 @@ void initBatterySpecs(int nr_of_cells, int volt_max_cell, int volt_min_cell, int
     specs.volt_min_cell = volt_min_cell;
 }
 
+/*******************
+
+De huidige spanning over de batterij opvragen.
+
+*******************/
 int getVoltage(){
 	return voltage;
 }
+
+/*******************
+
+De huidige spanning over de batterij gaan instellen.
+
+*******************/
 void setVoltage(int i){
 	voltage=i;
 }
 
+/*******************
+
+De stroom die NU in/uit de batterij loop gaan opvragen.
+
+*******************/
 int getCurrent(){
     return current;
 }
 
+/*******************
+
+De stroom die NU in/uit de batterij loop gaan instellen.
+
+*******************/
 void setCurrent(int i){
     current = i;
 }
 
+/*******************
+
+De temperatuur van de batterij gaan opvragen.
+
+*******************/
 int getTemperature(){
 	return temperature;
 }
 
+/*******************
+
+De maximale temperatuur die de batterij mag hebben gaan instellen.
+
+*******************/
+int getMaxTemperature(){
+	return max_temp;
+}
+
+/*******************
+
+De load factor gaan opvragen.
+
+*******************/
 int getLoadFactor(){
 	return load;
 }
 
+/*******************
+
+De load factor gaan instellen.
+
+*******************/
 void setLoadFactor(int factor){
 	load=factor;
 }
 
+/*******************
+
+De SOC gaan opvragen.
+
+*******************/
 int getStateOfCharge(){
 	return state_of_charge;
 }
 
+/*******************
+
+De SOC gaan instellen.
+
+*******************/
 void setStateOfCharge(int i){
 	state_of_charge=i;
 }
@@ -97,7 +172,11 @@ void setMaxLoad(int i){
 }
 
 
+/*******************
 
+De temperatuur gaan instellen.
+
+*******************/
 void setTemperature(int i){
 	temperature=i;
 	if(i>max_temp){
@@ -118,6 +197,21 @@ void setTemperature(int i){
 	}
 }
 
+/*******************
+
+De maximale temperatuur van de batterij gaan instellen.
+
+*******************/
+void setMaxTemperature(int i){
+	max_temp = i;
+}
+
+/*******************
+
+Afhankelijk van de meting, een alarm gaan oproepen. 
+Elk alarm gaat een specifiek opdracht uitvoeren.
+
+*******************/
 void alarm(int code){
 	//afhankelijk van de alarmcode (hoe dringend het is) moet er een functie worden opgeroepen die hierop anticipeerd.
 	switch(code){
@@ -130,13 +224,33 @@ void alarm(int code){
 	}
 }
 
+/************************
+
+mutex gaan locken
+
+************************/
 void startConnecting(){
 	pthread_mutex_lock (&connection);
 }
+
+/************************
+
+mutex gaan unlocken
+
+************************/
 void stopConnecting(){
 	 pthread_mutex_unlock (&connection);
 }
 
+/*******************
+
+De bezigheid van de wagen instellen.
+De mogelijkheden zijn:
+	laden
+	rijden 
+	wachten
+
+*******************/
 void setWork(bezigheid b){
 	work=b;
 }
@@ -145,7 +259,12 @@ bezigheid getWork(){
 	return work;
 }
 
-int main(int argc, char* argv[]){
+/*******************
+
+testfunctie voor de controller_car.
+
+*******************/
+int testCC(){
     // Initialisatie
     initBatterySpecs(2, 4200, 3000, 2600);
     setBatterijType(LiPo);

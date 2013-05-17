@@ -1,6 +1,6 @@
 #include "lader.h"
 #include "metingen.h"
-#include "gpio-mmap.h"
+#include "gpio_map.h"
 #include <stdio.h>
 #include "NiMH.h"
 #include "LiPo.h"
@@ -8,23 +8,59 @@
 #include "controller_car.h"
 #include "i2c.h"
 
+/*******************
+
+initialiseren van de constanten uit lader.h
+
+*******************/
 int init(){
+	gpio_map();
 	gpio_output(DISCHARGE_BANK, DISCHARGE_PIN);
 	gpio_output(ON_OFF_BANK, ON_OFF_PIN);
 	turnOff();
 	charge();
+		currentCharger=0; //uitgedrukt in mA
+//On: 1, off: 0
+	on=0;
+//Charging: 1, discharging: 0
+	charging=1;
+
+// Variabelen voor State of Charge
+	integratedCurrent=0; // Accumulatie van vorige stromen
+	timeOfMeasurement=0;
+
+//Lipo: 0, NiMH: 1
+	batterij_type = LiPo;
+
+// Toestanden voor relay-standen
+	status = USE;
 }
 
+/*******************
+
+PCB aanzetten
+
+*******************/
 void turnOn(){
 	GPIO_WRITE(ON_OFF_BANK, ON_OFF_PIN, 1);
 	on = 1;
 }
 
+/*******************
+
+PCB afzetten
+
+*******************/
 void turnOff(){
 	GPIO_WRITE(ON_OFF_BANK, ON_OFF_PIN, 0);
 	on = 0;
 }
 
+/*******************
+
+PCB in laadmodus zetten
+
+*******************/
 void charge(){
 	GPIO_WRITE(DISCHARGE_BANK, DISCHARGE_PIN, 0);
 	charging = 1;
@@ -35,20 +71,42 @@ void charge(){
 	}
 }
 
+/*******************
+
+PCB in ontlaadmodus zetten
+
+*******************/
 void discharge(){
 	GPIO_WRITE(DISCHARGE_BANK, DISCHARGE_PIN, 1);
 	charging = 0;
 }
 
+/*******************
+
+Staat de PCB aan?
+
+*******************/
 int isOn(){
 	return on;
 }
 
+/*******************
+
+Staat de PCB in laadmodus?
+
+*******************/
 int isCharging(){
 	return charging;
 }
 
+/*******************
 
+Verander de status van de lader. Deze functie moet gebruikt worden aangezien bepaalde combinaties van relaystanden niet goed zijn voor de batterij
+mogelijke status:   USE
+					CHARGING
+					DISCHARGING
+
+*******************/
 int setState(enum status new_state){
     if (new_state == status) return 1;
     // Huidige status bepaalt overgangsmethode
@@ -89,7 +147,9 @@ int setState(enum status new_state){
             if (new_state == DISCHARGING) {
                 // Schakel naar ontladen
                 discharge();
-                // Koppel de lader
+                //instellen van de stroom
+				setCurrentCharger(0);
+				// Koppel de lader
                 turnOn();
                 // Stel stroom in
                 // TODO: gewenste stroom instellen
@@ -108,10 +168,21 @@ int setState(enum status new_state){
     return 0;
 }
 
+/*******************
+
+Geef de status van de lader terug
+
+*******************/
 enum status getState(){
     return status;
 }
 
+/*******************
+
+Stel de stroom in van de PCB
+De stroom moet eerst omgezetten in een spanning dmv convertCurrent
+
+*******************/
 void setCurrentCharger(int i){
         int voltage_dac;
         currentCharger=i;
@@ -123,6 +194,11 @@ void setCurrentCharger(int i){
         }
 }
 
+/*******************
+ 
+omzetting stroom in spanning voor de DAC
+
+*******************/
 int convertCurrent(){
 	// Gebruik altijd een positieve stroom, 
         // op of ontladen is via relais 
@@ -146,7 +222,11 @@ int isAtChargeLimit(int load){
 	else return 1;
 }
 
+/*******************
 
+Batterij type aanpassen. Momenteel is dat LiPo of NiMH.
+
+*******************/
 void setBatterijType(enum type_batterij v){
 	batterij_type = v;
 }
@@ -174,6 +254,11 @@ char* getBatterijType(){
 	return output;
 }
 
+/*******************
+
+Uitvoeren van het algoritme dat bij de batterij hoort.
+
+*******************/
 void chargeAlgorithm(){
 	switch(batterij_type){
 		case LiPo:
@@ -186,3 +271,5 @@ void chargeAlgorithm(){
 			printf("You have to configure your battery type!\n");
 	}
 }
+
+
