@@ -22,7 +22,7 @@ int readLRADC1();
 
 int *lradc_mmap;
 
-int *lradc_map();
+void *lradc_map();
 
 int lradc_rd(long offset);
 

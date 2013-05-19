@@ -7,7 +7,8 @@
 #define R5	56
 #define R6	120
 
-
+unsigned long timeMoment,now;
+int sum;
 
 int initMeasurements();
 
@@ -33,5 +34,9 @@ int measureT();
 // return: -1 Een of meerder NULL-pointers
 int calculateStateofCharge(int*, unsigned long*);
 
+//de voltage en de spanning worden upgedate. Net zoals de stateOfCharge.
+void manageMeasurements();
+
+void* measurementsThr(void* arg);
 
 #endif

@@ -15,11 +15,17 @@ initialiseren van de constanten uit lader.h
 *******************/
 int init(){
 	gpio_map();
+	printf("We zijn in de lader.c\n");
 	gpio_output(DISCHARGE_BANK, DISCHARGE_PIN);
+	printf("lader1\n");
 	gpio_output(ON_OFF_BANK, ON_OFF_PIN);
+	printf("lader2\n");
 	turnOff();
+	printf("lader3\n");
 	charge();
+	printf("lader4\n");
 		currentCharger=0; //uitgedrukt in mA
+		printf("lader5\n");A
 //On: 1, off: 0
 	on=0;
 //Charging: 1, discharging: 0
@@ -64,11 +70,6 @@ PCB in laadmodus zetten
 void charge(){
 	GPIO_WRITE(DISCHARGE_BANK, DISCHARGE_PIN, 0);
 	charging = 1;
-	if(isOn()==1){
-		/*We roepen meteen ook het laadalgoritme op zodat er zeker niet ongecontroleerd kan gebeuren. 
-		We moeten voor zekerheid ook controleren dat de pcb niet aanstaat anders is het nutteloos van het oplaadalgoritme te laten rekenen.*/
-		chargeAlgorithm();
-	}
 }
 
 /*******************
@@ -201,12 +202,18 @@ omzetting stroom in spanning voor de DAC
 *******************/
 int convertCurrent(){
 	// Gebruik altijd een positieve stroom, 
-        // op of ontladen is via relais 
-	return ((2500 + 0.1*currentCharger)*4096)/ VDD;
+    // op of ontladen is via relais 
+	//De DAC kan een spanning tot VDD maken. Het heeft 12 bits om verschillende waarden aan te leggen. De kleinste van 0 verschillende spanning is LSB = VDD/2^12=VDD/4096. Dit komt overeen met 0000 0000 0001. 
+	//om een spanning dus om te zetten in bits, moeten we het delen door 1LSB.
+	//0.1 komt van 100mV per amper = 0.1 mV/mA. Dit is een karakteristiek van de hall sensor die aan de comparator hangt.
+	return ((0.1*currentCharger)*4096)/ VDD;
 }
 
+/******************
 
 // Update de SoC
+
+******************/
 void updateStateofCharge(){
 	// Bereken SoC
     int soc = getStateOfCharge();
@@ -215,8 +222,11 @@ void updateStateofCharge(){
 	setStateOfCharge(soc);
 }
 
+/******************
 
 // Controleer of de batterij aan zijn limiet is
+
+******************/
 int isAtChargeLimit(int load){
 	if(getStateOfCharge() < load) return 0;
 	else return 1;

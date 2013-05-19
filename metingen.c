@@ -21,9 +21,13 @@ Het initialiseren van alle testcomponenten + de tijd van het bordje beginnen bij
 *******************/
 #ifndef TEST
 int initMeasurements(){
+	struct timeval tv;
+    gettimeofday(&tv, NULL);
+    now = tv.tv_sec*1000 + tv.tv_usec/1000;
+	sum = 0;
 	initLRADC0();
 	initLRADC1();
-	//klopt het dat we voor i²c niets moeten initialiseren
+	//I²C
 }
 
 /*******************
@@ -60,6 +64,7 @@ int measureI(){
         V_LRADC0=convertToVoltage(readLRADC0());
         V_Hall=(V_LRADC0*(R6 + R3)) / R6;
         
+
         curr=(V_Hall-2500)*10; //want 100mV/A => 10mA/mV
         if (getState() == DISCHARGING) {
             // Bij ontladen vloeit de ingestelde stroom weg uit de batterij

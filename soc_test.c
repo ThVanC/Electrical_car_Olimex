@@ -13,7 +13,12 @@
 #include "metingen.h"
 #include "controller_car.h"
 
+/***************************
 
+De spanning meten.
+Dit is een dummiefunctie die gewoon een waarde aanlegt om de test te kunnen laten lopen. We laten de spanning toch een beetje varieren om in de verschillende stadia van het proces te komen.
+
+***************************/
 int measureV(){
     if (now - start_time < 1000){
         return 8400;
@@ -25,19 +30,33 @@ int measureV(){
     
 }
 
+/***************************
+
+De stroom meten.
+Dit is een dummiefunctie die gewoon een waarde aanlegt om de test te kunnen laten lopen.
+
+***************************/
 int measureI(){
     return -1000; // 1A afname
 }
 
+
+/******************************
+
+Dit is een losstaand programma om de SOC logica te gaan testen.
+
+******************************/
 int main(int argc, char** argv){
     struct timeval tv, timer;
     int current, voltage, sum;
     
+	//de tijd goed instellen.
     printf("Initialize time...\n");
     gettimeofday(&tv, NULL);
     start_time = tv.tv_sec*1000 + tv.tv_usec/1000;
     printf("Start time is %ld ms\n",start_time);
     
+	//we stellen een batterij met willekeurig gekozen waarden in.
     printf("Initialize battery specs...\n");
     specs.capacity = 2600;
     specs.nr_of_cells = 2;
@@ -47,6 +66,7 @@ int main(int argc, char** argv){
     now = start_time;
     sum = 0;
     
+	//we gaan het programma gedurende een tijd van 14000 laten werken
     do {
         int soc;
         current = measureI();

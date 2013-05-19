@@ -1,6 +1,6 @@
 #ifndef CONTROLLER_CAR_H
 #define CONTROLLER_CAR_H
-
+#include <pthread.h>
 // BATTERIJEIGENSCHAPPEN
 typedef struct{
     int nr_of_cells;    // Aantal cellen in parallel
@@ -9,43 +9,33 @@ typedef struct{
     int capacity;       // Capaciteit van batterij (mAh)
 } battery;
 
-<<<<<<< HEAD
-enum werk {
+
+typedef enum werk {
 	laden, 
 	rijden, 
 	wachten
 } bezigheid;
 
 
-=======
->>>>>>> 83841f34cbb827163b7eac4b4807bd38a35a2112
 battery specs;
 
-enum buzy{
-	WAITPASS,
-    LOAD,
-    DRIVE,
-    SLEEP
-};
 
 void initBatterySpecs(int nr_of_cells, int volt_max_cell, int volt_min_cell, int capacity);
 
-int voltage;//De spanning over de batterij uitgedrukt in mV
-int current;
-int state_of_charge;//De batterijstatus uitgedrukt in  1,000,000 x procent
-int temperature;
-int max_temp=50;//de default maximum temperatuur van de wagen
-int load=0; //Deze waarde is een indicatie van hoe sterk de wagen mag opladen, als deze waarde positief is gaat de wagen opladen, anders ontladen. Uitgedrukt in milliwatt?
-time_t time;
-int distance;
-int max_energy_per_distance;
-int energy;
-<<<<<<< HEAD
+int voltage;			//De spanning over de batterij uitgedrukt in mV
+int current;			//De gemetenstroom
+int state_of_charge;	//De batterijstatus uitgedrukt in  1,000,000 x procent
+int temperature;		//De temperatuur van de batterij
+int max_temp;			//de default maximum temperatuur van de wagen
+int load;				//Deze waarde is een indicatie van hoe sterk de wagen mag opladen, als deze waarde positief is gaat de wagen opladen, anders ontladen. Uitgedrukt in milliwatt?
+
 bezigheid work;
-=======
-enum buzy work = SLEEP;
->>>>>>> 83841f34cbb827163b7eac4b4807bd38a35a2112
-pthread_mutex_t connection = PTHREAD_MUTEX_INITIALIZER;
+
+
+void initCar();
+
+extern pthread_mutex_t connection;
+extern pthread_mutex_t emergency;
 
 /* Getters en Setters voor Spanning, Stroom, SoC en Temperatuur */
 int getVoltage();
@@ -56,6 +46,7 @@ void setCurrent(int i);
 
 int getTemperature();
 void setTemperature(int i);
+
 int getMaxTemperature();
 void setMaxTemperature(int i);
 
@@ -66,25 +57,23 @@ int getStateOfCharge();
 void setStateOfCharge(int i);
 
 
-void alarm(int code);
+void alarmF(int code);
 
 void startLoading();
 void startDriving();
 void startSleeping();
-<<<<<<< HEAD
+
 bezigheid getWork();
 void setWork(bezigheid b);
 void startConnecting();
-void stopConnecting();
+void waitConnecting();
+void emergencyStop();
+void emergencyStart();
 
-=======
-enum buzy getWork();
 int connect();
->>>>>>> 83841f34cbb827163b7eac4b4807bd38a35a2112
 
 
-void initCar();
 
-int testCC();
+
 
 #endif

@@ -15,43 +15,43 @@
 #include "imx233.h"
 #include "gpio_map.h"
 
-#ifndef MAIN
-#define MAIN
+
+//LCD6 is volledige beschreven. De andere zijn gelijkaardig.
 
 /***************************************
 
-init:	instellen van de pin als GPIO-output.
-set:	laat een hoog signaal naar buiten gaan.
-clr:	laat een laag signaal naar buiten gaan.
-
-***************************************/
-
-/***************************************
-
-LCD6
+LCD6: bank0 pin6
 
 ***************************************/
 void initLCD6(){
+	//geheugen mapping
 	gpio_map();
+	//multiplexen: GPIO is op 11 zetten
 	gpio_wr_eigen(HW_PINCTRL_MUXSEL2_SET, 0b00000000000000000011000000000000);
+	//de stroom instellen
 	gpio_wr_eigen(HW_PINCTRL_DRIVE4_SET,  0b00000001000000000000000000000000);
 	gpio_wr_eigen(HW_PINCTRL_DRIVE4_CLR,  0b00000010000000000000000000000000);
+	//pullup weerstand gebruiken.
 	//gpio_wr_eigen(HW_PINCTRL_PULL1_SET,   0b00000000000001000000000000000000);
+	//input uitzetten
 	gpio_wr_eigen(HW_PINCTRL_DIN1_CLR,    0b00000000000000000000000001000000);
+	//output aanzetten.
 	gpio_wr_eigen(HW_PINCTRL_DOE1_SET,    0b00000000000000000000000001000000);
 }
 
 void setLCD6(){
+	//De output hoog zetten.
 	gpio_wr_eigen(HW_PINCTRL_DOUT1_SET,   0b00000000000000000000000001000000);
 }
 
 void clrLCD6(){
+	//De output laag zetten.
 	gpio_wr_eigen(HW_PINCTRL_DOUT1_CLR,   0b00000000000000000000000001000000);
 }
 
 /***************************************
 
-LCD7
+LCD7: bank0 pin7
 
 ***************************************/
 void initLCD7(){
@@ -74,7 +74,7 @@ void clrLCD7(){
 
 /***************************************
 
-LCD8: NOG NIET GEFIXED!!
+LCD8: bank0 pin0
 
 ***************************************/
 void initLCD8(){
@@ -97,7 +97,7 @@ void clrLCD8(){
 
 /***************************************
 
-LCD9
+LCD9: bank0 pin1
 
 ***************************************/
 void initLCD9(){
@@ -120,7 +120,7 @@ void clrLCD9(){
 
 /***************************************
 
-LCD10
+LCD10: bank0 pin2
 
 ***************************************/
 void initLCD10(){
@@ -143,7 +143,7 @@ void clrLCD10(){
 
 /***************************************
 
-LCD11
+LCD11: bank0 pin3
 
 ***************************************/
 void initLCD11(){
@@ -166,7 +166,7 @@ void clrLCD11(){
 
 /***************************************
 
-LCD12
+LCD12: bank0 pin 4
 
 ***************************************/
 void initLCD12(){
@@ -189,7 +189,7 @@ void clrLCD12(){
 
 /***************************************
 
-LCD13
+LCD13: bank0 pin5
 
 ***************************************/
 void initLCD13(){
@@ -212,10 +212,11 @@ void clrLCD13(){
 
 /***************************************
 
-LCD14
+LCD14: bank0 pin6
 
 ***************************************/
 void initLCD14(){
+	gpio_map();
 	gpio_wr_eigen(HW_PINCTRL_MUXSEL0_SET, 0b00000000000000000011000000000000);
 	gpio_wr_eigen(HW_PINCTRL_DRIVE0_SET,  0b00000001000000000000000000000000);
 	gpio_wr_eigen(HW_PINCTRL_DRIVE0_CLR,  0b00000010000000000000000000000000);
@@ -232,9 +233,133 @@ void clrLCD14(){
 	gpio_wr_eigen(HW_PINCTRL_DOUT0_CLR,   0b00000000000000000000000001000000);
 }
 
+/*************************
+
+LCD15: bank0 PIN7
+
+*************************/
+void initLCD15(){
+	gpio_map();
+	gpio_wr_eigen(HW_PINCTRL_MUXSEL0_SET, 0b00000000000000001100000000000000);
+	gpio_wr_eigen(HW_PINCTRL_DRIVE0_SET,  0b00010000000000000000000000000000);
+	gpio_wr_eigen(HW_PINCTRL_DRIVE0_CLR,  0b00100000000000000000000000000000);
+	gpio_wr_eigen(HW_PINCTRL_PULL0_SET,   0b00000000000000000000000010000000);
+	gpio_wr_eigen(HW_PINCTRL_DIN0_CLR,    0b00000000000000000000000010000000);
+	gpio_wr_eigen(HW_PINCTRL_DOE0_SET,    0b00000000000000000000000010000000);
+}
+
+void setLCD15(){
+	gpio_wr_eigen(HW_PINCTRL_DOUT0_SET,   0b00000000000000000000000010000000);
+}
+
+void clrLCD15(){
+	gpio_wr_eigen(HW_PINCTRL_DOUT0_CLR,   0b00000000000000000000000010000000);
+}
+
+/*****************************
+
+LCD16: bank0 pin 16
+
+*****************************/
+void initLCD16(){
+	gpio_map();
+	//De 2 minst beduidende bits goed zetten. Deze komen met pin 16 overeen.
+	gpio_wr_eigen(HW_PINCTRL_MUXSEL1_SET, 0b00000000000000000000000000000011);
+	gpio_wr_eigen(HW_PINCTRL_DRIVE2_SET,  0b00000000000000000000000000000001);
+	gpio_wr_eigen(HW_PINCTRL_DRIVE2_CLR,  0b00000000000000000000000000000010);
+	//gpio_wr_eigen(HW_PINCTRL_PULL0_SET,   0b00000000000000000000000000000000);
+	gpio_wr_eigen(HW_PINCTRL_DIN0_CLR,    0b00000000000000010000000000000000);
+	gpio_wr_eigen(HW_PINCTRL_DOE0_SET,    0b00000000000000010000000000000000);
+}
+
+void setLCD16(){
+	//Zet pin 16 van bank0 hoog.
+	gpio_wr_eigen(HW_PINCTRL_DOUT0_SET,   0b00000000000000010000000000000000);
+}
+
+void clrLCD16(){
+	//clr pin 16 van bank 0.
+	gpio_wr_eigen(HW_PINCTRL_DOUT0_CLR,   0b00000000000000010000000000000000);
+}
+
+/*******************************
+
+LCD17: bank0 pin 17
+
+*******************************/
+void initLCD17(){
+	gpio_map();
+	gpio_wr_eigen(HW_PINCTRL_MUXSEL1_SET, 0b00000000000000000000000000001100);
+	gpio_wr_eigen(HW_PINCTRL_DRIVE2_SET,  0b00000000000000000000000000000100);
+	gpio_wr_eigen(HW_PINCTRL_DRIVE2_CLR,  0b00000000000000000000000000001000);
+	//gpio_wr_eigen(HW_PINCTRL_PULL0_SET,   0b00000000000000000000000000000000);
+	gpio_wr_eigen(HW_PINCTRL_DIN0_CLR,    0b00000000000000100000000000000000);
+	gpio_wr_eigen(HW_PINCTRL_DOE0_SET,    0b00000000000000100000000000000000);
+}
+
+void setLCD17(){
+	gpio_wr_eigen(HW_PINCTRL_DOUT0_SET,   0b00000000000000100000000000000000);
+}
+
+void clrLCD17(){
+	gpio_wr_eigen(HW_PINCTRL_DOUT0_CLR,   0b00000000000000100000000000000000);
+}
+
+/****************************
+
+LCD18: bank1 pin 22
+
+****************************/
+void initLCD18(){
+	gpio_map();
+	gpio_wr_eigen(HW_PINCTRL_MUXSEL3_SET, 0b00000000000000000001100000000000);
+	gpio_wr_eigen(HW_PINCTRL_DRIVE6_SET,  0b00000001000000000000000000000100);
+	gpio_wr_eigen(HW_PINCTRL_DRIVE6_CLR,  0b00000010000000000000000000001000);
+	gpio_wr_eigen(HW_PINCTRL_PULL1_SET,   0b00000000010000000000000000000000);
+	gpio_wr_eigen(HW_PINCTRL_DIN1_CLR,    0b00000000010000000000000000000000);
+	gpio_wr_eigen(HW_PINCTRL_DOE1_SET,    0b00000000010000000000000000000000);
+}
+
+void setLCD18(){
+	gpio_wr_eigen(HW_PINCTRL_DOUT1_SET,   0b00000000010000000000000000000000);
+}
+
+void clrLCD18(){
+	gpio_wr_eigen(HW_PINCTRL_DOUT1_CLR,   0b00000000010000000000000000000000);
+}
+
+/******************************
+
+de ledjes aansturen ifv de loadfactor.
+
+******************************/
+void setLEDS(int load){
+			if(load/1250==0){
+				setLCD15();
+				clrLCD16();
+				clrLCD17();
+				clrLCD18();
+			}else if(load/2500==0){
+				setLCD15();
+				setLCD16();
+				clrLCD17();
+				clrLCD18();
+			}else if(load/3750==0){
+				setLCD15();
+				setLCD16();
+				setLCD17();
+				clrLCD18();
+			}else{
+				setLCD15();
+				setLCD16();
+				setLCD17();
+				clrLCD18();
+			}
+}
+
 /***************************************
 
-Main: de ledjes 100 keer laten pinken.
+Main-test
 
 ***************************************/
 int gpio_test(){
@@ -279,5 +404,3 @@ int gpio_test(){
 		usleep(200000);
 	}
 }
-
-#endif

@@ -1,9 +1,10 @@
 #include "lader.h"
 #include "gpio-mmap.h"
-//#include "metingen.h"
+#include "metingen.h"
 #include <stdio.h>
 #include "NiMH.h"
 #include "controller_car.h"
+#include "pin_config.h"
 #include <unistd.h>
 
 /*******************
@@ -31,7 +32,8 @@ int charge_NiMH(int socLoad){
 	sleepTime = 100;
 	sleepTime_fin =5000;
 
-	while (getState()==CHARGING) {
+	while (getLoadFactor()>0) {
+		setLEDS(getLoadFactor());
 		if (isAtChargeLimit(socLoad)) return 2;
 		V_bat=getVoltage();
 	

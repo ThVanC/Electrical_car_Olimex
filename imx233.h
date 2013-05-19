@@ -1,6 +1,8 @@
 #ifndef IMX233_H
 #define IMX233_H
 
+//dit is de lijst van register die aanwezig zijn in de IMX233 processor van Freescale.
+
 // This list of physical registers was extracted by running:
 // grep _PHYS linux-2.6.26.3/src/include/asm/arch/* | cut -d':' -f 2
 #define REGS_DIGCTL_BASE_PHYS	0x8001C000

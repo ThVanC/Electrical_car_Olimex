@@ -4,6 +4,8 @@
 //
 //
 // Definitie van adressen (7 bit)
+#ifndef I2C_H
+#define I2C_H
 #define ADDR_TEMPSENSOR    0x48 // = 100 1000
 #define ADDR_DAC           0x60 // = 110 0000
 #define ADDR_LCD           0x7C // zie datasheet
@@ -15,7 +17,7 @@ int deviceDescriptor;
 void i2c_init(char* device);
 
 // Lees van Slave op gegeven adres
-void i2c_read_data(unsigned char addr, unsigned char* data, int length);
+void i2c_read_data(unsigned char* addr, unsigned char* data, int length);
 
 //Schrijf data naar Slave op adres
 void i2c_write_data(unsigned char addr, unsigned char* data, int length);
@@ -29,3 +31,4 @@ void i2c_write_DAC(int voltage);
 
 // Wrapper om DAC uit te schakelen
 void i2c_shutdown_DAC();
+#endif

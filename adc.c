@@ -211,9 +211,9 @@ int convertToVoltage(int value){
 Memorymapping maken
 
 *******************/
-int *lradc_map() {
+void *lradc_map() {
 	int fd;
-	if (lradc_mmap != 0) return;
+	if (lradc_mmap != 0) return NULL;
 		fd = open("/dev/mem", O_RDWR);
 	if( fd < 0 ) {
 		perror("Unable to open /dev/mem");

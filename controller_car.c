@@ -2,10 +2,14 @@
 #include "controller_car.h"
 #include "metingen.h"
 #include "lader.h"
-#include <unistd.h>
+//#include <unistd.h>
+#include <pthread.h>
 
 #ifndef CONTROLLER_CAR
 #define CONTROLLER_CAR
+
+pthread_mutex_t connection = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t emergency = PTHREAD_MUTEX_INITIALIZER;
 
 /*******************
 
@@ -15,11 +19,13 @@ De waarden in controleer_car gaan initialiseren.
 void initCar(){
 	voltage=0;			//De spanning over de batterij uitgedrukt in mV
 	current=0;			//De gemetenstroom
-	state_of_charge=0;	//De batterijstatus uitgedrukt in  1,000,000 x procent
+	state_of_charge=100;	//De batterijstatus uitgedrukt in  1,000,000 x procent
 	temperature=0;		//De temperatuur van de batterij
-	max_temp=0;			//de default maximum temperatuur van de wagen
+	max_temp=50;		//de default maximum temperatuur van de wagen
 	load=0;
-	work = wachten;
+	work = rijden;
+	waitConnecting();
+	emergencyStart();
 }
 
 /*******************
@@ -103,7 +109,14 @@ De load factor gaan instellen.
 
 *******************/
 void setLoadFactor(int factor){
-	load=factor;
+	printf("@try to set loadFactor\n");
+	int i;
+	if((i=pthread_mutex_trylock(&emergency))==0){
+		printf("@goodluck %i\n",pthread_mutex_trylock(&emergency));
+		load=factor;
+		pthread_mutex_unlock(&emergency);
+	}
+	printf("@test %i\n",i);
 }
 
 /*******************
@@ -124,6 +137,7 @@ void setStateOfCharge(int i){
 	state_of_charge=i;
 }
 
+/*
 time_t getTimeLimit(){
 	return time;
 }
@@ -170,7 +184,7 @@ int getMaxLoad(){
 void setMaxLoad(int i){
 	max_load=i;
 }
-
+*/
 
 /*******************
 
@@ -210,17 +224,18 @@ void setMaxTemperature(int i){
 
 Afhankelijk van de meting, een alarm gaan oproepen. 
 Elk alarm gaat een specifiek opdracht uitvoeren.
+Deze alarmen worden opgeroepen wanneer de temperatuur te hoog wordt.
 
 *******************/
 void alarm(int code){
 	//afhankelijk van de alarmcode (hoe dringend het is) moet er een functie worden opgeroepen die hierop anticipeerd.
 	switch(code){
 		//Bij code 10 moet alles direct afgelegd worden
-		case 10: printf("groot alarm, Laurens, doe iets");break;
+		case 10: printf("alarm code 10");load=0; emergencyStop();break;
 		//Bij code 9 moeten we mssn ook wel eens iets gaan doen
-		case 9: printf("alarm, Zeger, doe iets");break;
-		case 8: printf("Lap, Emmelie, t is omzeep");break;
-		case 7: printf("Lap, Mathias, ge hebt een oneindige lus geprogrammeerd. please call me, number 101"); break;
+		case 9: printf("alarm code 9");break;
+		case 8: printf("alarm code 8");break;
+		case 7: printf("arlam code 7");emergencyStart(); break;
 	}
 }
 
@@ -240,6 +255,23 @@ mutex gaan unlocken
 ************************/
 void stopConnecting(){
 	 pthread_mutex_unlock (&connection);
+}
+/**********************
+
+Emergency stop
+
+**********************/
+void emergencyStop(){
+	pthread_mutex_lock (&emergency);
+}
+
+/**********************
+
+Emergency start
+
+**********************/
+void emergencyStart(){
+	pthread_mutex_unlock (&emergency);
 }
 
 /*******************
