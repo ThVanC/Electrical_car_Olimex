@@ -65,7 +65,7 @@ int measureI(){
         V_Hall=(V_LRADC0*(R6 + R3)) / R6;
         
 
-        curr=(V_Hall-2500)*10; //want 100mV/A => 10mA/mV
+        curr=(V_Hall)*10; //want 100mV/A => 10mA/mV
         if (getState() == DISCHARGING) {
             // Bij ontladen vloeit de ingestelde stroom weg uit de batterij
             // En een deel via de Hall sensor naar het circuit
