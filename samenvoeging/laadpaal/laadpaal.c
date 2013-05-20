@@ -67,7 +67,10 @@ void *doeiets(void* erin){
 	socket2=accept(input.socket1, (struct sockaddr *)&client_addr, &clilen);
 	printf("onze poort: %i\n",useport);
 	server=startClient(2*poort-useport-4,poort_centrale_server,host_centrale_server);
-	if(socket2<0){printf("problemen bij accept van client, error nummer %i, boodschap: %s\n",socket2, gai_strerror(socket2));return 0;}
+	if(socket2<0){
+		printf("problemen bij accept van client, error nummer %i, boodschap: %s\n",socket2, gai_strerror(socket2));
+		return 0;
+	}
 	while(open){
 		if(isReadyToRead(server.socket1,3000000)){
 			error=read(server.socket1,buffer,255);
@@ -75,7 +78,10 @@ void *doeiets(void* erin){
 		}
 		else break;
 		error=send(socket2,buffer,strlen(buffer)*sizeof(char),input.hints.ai_flags);
-		if(error<0){printf("problemen bij verzenden van hetpakket\n");open=0;}
+		if(error<0){
+			printf("problemen bij verzenden van hetpakket\n");
+			open=0;
+		}
 		sprintf(buffer,"");
 		if(isReadyToRead(socket2,3000000)){
 			error=read(socket2,buffer,255);
@@ -83,11 +89,13 @@ void *doeiets(void* erin){
 		if(error<0){
 			printf("problemen bij het ontvangen van de client zijn tweede bericht\n"); 
 			open=0;
-			}
+		}
 		}
 		else break;
 		error=send(server.socket1, buffer, strlen(buffer)*sizeof(char), server.hints.ai_flags);
-		if(error<0)printf("problemen bij het verzenden van een bericht naar de server");
+		if(error<0){
+			printf("problemen bij het verzenden van een bericht naar de server");
+		}
 	}
 	printf("De funcie is gesloten\n");
 	close(input.socket1);
@@ -127,12 +135,17 @@ int main(){
 		memset(&client_addr, 0, sizeof(client_addr));
 		clilen=16;
 		socket2=accept(input.socket1, (struct sockaddr *)&client_addr, &clilen);
-		if(socket2<0){printf("problemen bij oude accept, error nummer %i, boodschap: %s\n",socket2, gai_strerror(socket2));return -5;}
+		if(socket2<0){
+			printf("problemen bij oude accept, error nummer %i, boodschap: %s\n",socket2, gai_strerror(socket2));
+			return -5;
+		}
 		
 		useport=(useport-poort)%max_poort+1+poort;
 		sprintf(tekst,"%i\r\n",useport);
 		error=send(socket2,tekst,strlen(tekst)*sizeof(char),hints.ai_flags);
-		if(error<0)printf("problemen bij verzenden van hetpakket\n");
+		if(error<0){
+			printf("problemen bij verzenden van hetpakket\n");
+		}
 		*argument=startServer(useport, me);
 		argument->connection=useport;
 		printf("De poort voor het oproepen van de pthread_create %i %i",useport,argument->connection);
@@ -185,38 +198,47 @@ void *runMasterSlave(char* myAddress){
 		clilen=16;
 		socket2=accept(input.socket1, (struct sockaddr *)&client_addr, &clilen);
 		
-		if(socket2<0){printf("problemen bij accept, error nummer %i, boodschap: %s\n",socket2, gai_strerror(socket2));return NULL;}
+		if(socket2<0){
+			printf("problemen bij accept, error nummer %i, boodschap: %s\n",socket2, gai_strerror(socket2));
+			return NULL;
+		}
 		printf("de clilen is %i\n",clilen);
 
 		//Hier moeten we het tekstobject omvormen tot een json object en dit json object vervolgens uitlezen en verwerken.
 		error=read(socket2,buffer,255);
 		tekst=setVariables(buffer);
 		error=send(socket2,tekst,strlen(tekst)*sizeof(char),input.hints.ai_flags);
-		if(error<0)printf("problemen bij verzenden van hetpakket\n");
+		if(error<0){
+			printf("problemen bij verzenden van hetpakket\n");
+		}
 
 		close(socket2);
 	}
 }
 
 void *contactMasterSlave(char* myAddress){
-//Hier gaan we ons aanmelden bij de centrale server
-//struct sockaddr_storage client_addr;
-//socklen_t clilen;
-int error;
-char* buffer=malloc(bufferlengte*sizeof(char));
-gethostname(buffer, 256);
-//printf("we zitten in de verkeerde functie %s\n",buffer);
-sprintf(buffer,"%s%i",prefix,1);
-struct arg input=startClient(poort-3, poort-2,buffer);
-//printf("we zitten in de verkeerde functie %s\n",myAddress);
-//printf("we zitten in de verkeerde functie %s\n",getMyIP());
-sprintf(buffer,"[{\"add_laadpaal\" : \"%s\"}]\n",myAddress);
-error=send(input.socket1,buffer,strlen(buffer)*sizeof(char),input.hints.ai_flags);
-if(error<0)printf("problemen bij verzenden van het pakket\n");
-error=read(input.socket1,buffer,255);
-if(error<0)printf("problemen bij het ontvangen van het bericht van de server, nummer %i: %s\n", error, gai_strerror(error));
-//We hebben ons nu aangemeld. Het IPadres van de laadpaal waarmee we contact willen leggen zit in de buffer.De volgende stap is om telkens naar de voorganger te "pingen" om te kijken of die er nog is, en om dan een boodschap te sturen naar de master om te zeggen dat er een laadpaal is verdwenen. Dit is echter niet noodzakelijk omdat het voertuig het wel zal merken als er een laadpaal niet meer is. Die kan het dan wel aan de laadpaal zeggen.
-return NULL;
+	//Hier gaan we ons aanmelden bij de centrale server
+	//struct sockaddr_storage client_addr;
+	//socklen_t clilen;
+	int error;
+	char* buffer=malloc(bufferlengte*sizeof(char));
+	gethostname(buffer, 256);
+	//printf("we zitten in de verkeerde functie %s\n",buffer);
+	sprintf(buffer,"%s%i",prefix,1);
+	struct arg input=startClient(poort-3, poort-2,buffer);
+	//printf("we zitten in de verkeerde functie %s\n",myAddress);
+	//printf("we zitten in de verkeerde functie %s\n",getMyIP());
+	sprintf(buffer,"[{\"add_laadpaal\" : \"%s\"}]\n",myAddress);
+	error=send(input.socket1,buffer,strlen(buffer)*sizeof(char),input.hints.ai_flags);
+	if(error<0){
+		printf("problemen bij verzenden van het pakket\n");
+	}
+	error=read(input.socket1,buffer,255);
+	if(error<0)
+		printf("problemen bij het ontvangen van het bericht van de server, nummer %i: %s\n", error, gai_strerror(error));
+	}
+	//We hebben ons nu aangemeld. Het IPadres van de laadpaal waarmee we contact willen leggen zit in de buffer.De volgende stap is om telkens naar de voorganger te "pingen" om te kijken of die er nog is, en om dan een boodschap te sturen naar de master om te zeggen dat er een laadpaal is verdwenen. Dit is echter niet noodzakelijk omdat het voertuig het wel zal merken als er een laadpaal niet meer is. Die kan het dan wel aan de laadpaal zeggen.
+	return NULL;
 }
 
 
@@ -231,7 +253,7 @@ char* setVariables(char* buffer){
   for (i=0; i<arraylen; i++){
     json_object_object_foreach(json_object_array_get_idx(jarray2, i),key,val){
 	if(json_object_to_json_string(val)[0]!='"'){
-	       waarde=strncpy(waarde,json_object_to_json_string(val),strlen(json_object_to_json_string(val)));
+		waarde=strncpy(waarde,json_object_to_json_string(val),strlen(json_object_to_json_string(val)));
 		waarde[strlen(json_object_to_json_string(val))]='\0';
 	}else{
 		waarde=strncpy(waarde,json_object_to_json_string(val)+1,strlen(json_object_to_json_string(val))-2);

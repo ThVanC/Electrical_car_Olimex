@@ -69,13 +69,22 @@ void *doeiets(void* erin){
 	char *tekst=malloc(tekstlengte*sizeof(char));
 	void *buffer=malloc(bufferlengte*sizeof(char));
 	sprintf(tekst,"%s\r\n",giveJSON());
-	if(input.socket1<0){printf("problemen bij accept, error nummer %i, boodschap: %s\n",input.socket1, gai_strerror(input.socket1));return 0;}
+	if(input.socket1<0){
+		printf("problemen bij accept, error nummer %i, boodschap: %s\n",input.socket1, gai_strerror(input.socket1));
+		return 0;
+	}
 	while(open){
 		error=send(input.socket1,tekst,strlen(tekst)*sizeof(char),input.hints.ai_flags);
-		if(error<0){printf("problemen bij verzenden van het pakket\n");open=0;}
+		if(error<0){
+			printf("problemen bij verzenden van het pakket\n");
+			open=0;
+		}
 
 		error=read(input.socket1,buffer,255);
-		if(error<0){printf("problemen bij het ontvangen van de client zijn tweede bericht\n");open=0;}
+		if(error<0){
+			printf("problemen bij het ontvangen van de client zijn tweede bericht\n");
+			open=0;
+		}
 		sprintf(tekst,"%s\n",SetVariables((char*)buffer));
 	}
 	close(input.socket1);
@@ -111,7 +120,10 @@ int main(){
 		socket2=accept(input.socket1, (struct sockaddr *)&client_addr, &clilen);
 		//error=bind(socket2, input.hints.ai_addr, input.hints.ai_addrlen);
 		printf("bindig: %i\n",error);
-		if(socket2<0){printf("problemen bij accept, error nummer %i, boodschap: %s\n",socket2, gai_strerror(socket2));return -5;}
+		if(socket2<0){
+			printf("problemen bij accept, error nummer %i, boodschap: %s\n",socket2, gai_strerror(socket2));
+			return -5;
+		}
 		tijdelijk.socket1=socket2;
 		tijdelijk.hints=hints;
 		*argument=tijdelijk;

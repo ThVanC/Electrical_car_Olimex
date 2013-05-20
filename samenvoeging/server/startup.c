@@ -42,16 +42,27 @@ struct arg startClient(int eigenpoort, int anderepoort, char* host){
 	hints.ai_protocol=0;	
 	sprintf(tekst,"%i",anderepoort);	
 	error=getaddrinfo(host,tekst,&hints1,&info);
-	if(error<0){printf("problemen bij getaddrinfo, error nummer %i, boodschap: %s\n",error, gai_strerror(error));return terug;}
+	if(error<0){
+		printf("problemen bij getaddrinfo, error nummer %i, boodschap: %s\n",error, gai_strerror(error));
+		return terug;
+	}
 
 	//We gaan de socket een nummer geven en bij een error gaan we termineren met exitwaarde -2	
 	socket1=socket(info->ai_family, info->ai_socktype, info->ai_protocol);
-	if(socket<0){printf("problemen bij socket1, error nummer %i, boodschap: %s\n",error, gai_strerror(socket1));return terug;}
+	if(socket<0){
+		printf("problemen bij socket1, error nummer %i, boodschap: %s\n",error, gai_strerror(socket1));
+		return terug;
+	}
 	connection=-1;
 	error=bind(socket1, hints.ai_addr, hints.ai_addrlen);
-	if(error<0){printf("problemen bij bind, error nummer %i, boodschap: %s\n",error, gai_strerror(error));return terug;}
+	if(error<0){
+		printf("problemen bij bind, error nummer %i, boodschap: %s\n",error, gai_strerror(error));
+		return terug;
+	}
 	connection=connect(socket1, info->ai_addr, info->ai_addrlen);
-	if(connection<0){printf("problemen met connectie als client\n");}
+	if(connection<0){
+		printf("problemen met connectie als client\n");
+	}
 	terug.connection=connection;
 	terug.hints=hints;
 	terug.socket1=socket1;
@@ -76,16 +87,28 @@ struct arg startServer(int eigenpoort, char* host_hier){
 
 	sprintf(nummer,"%i",eigenpoort);
 	error=getaddrinfo(host_hier,nummer,&hints,&info);
-	if(error<0){printf("problemen bij adresinfo, error nummer %i, boodeschap: %s\n",error,gai_strerror(error));return terug;}
+	if(error<0){
+		printf("problemen bij adresinfo, error nummer %i, boodeschap: %s\n",error,gai_strerror(error));
+		return terug;
+	}
 	
 	socket1=socket(info->ai_family, info->ai_socktype, info->ai_protocol);
-	if(socket1<0){printf("problemen bij socket1, error nummer %i, boodschap: %s\n",socket1,gai_strerror(socket1));return terug;}
+	if(socket1<0){
+		printf("problemen bij socket1, error nummer %i, boodschap: %s\n",socket1,gai_strerror(socket1));
+		return terug;
+	}
 
 	error=bind(socket1, info->ai_addr, info->ai_addrlen);
-	if(error<0){printf("problemen bij bind, error nummer %i, boodschpa: %s\n",error, gai_strerror(error));return terug;}
+	if(error<0){
+		printf("problemen bij bind, error nummer %i, boodschpa: %s\n",error, gai_strerror(error));
+		return terug;
+	}
 
 	error=listen(socket1, 5);
-	if(error<0){printf("problemen bij listen, error nummer %i, boodschap %s\n", error, gai_strerror(error));return terug;}
+	if(error<0){
+		printf("problemen bij listen, error nummer %i, boodschap %s\n", error, gai_strerror(error));
+		return terug;
+	}
 	terug.socket1=socket1;
 	terug.hints=hints;
 	terug.connection=0;
