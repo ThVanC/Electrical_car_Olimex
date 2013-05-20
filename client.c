@@ -143,7 +143,7 @@ void closeSocket(){
 
 /*******************
 
-
+Deze functie geeft het IP adres terug uit een JSON String
 
 *******************/
 char* giveHost(char* buffer){
@@ -157,7 +157,8 @@ char* giveHost(char* buffer){
 
 /*******************
 
-
+Deze functie is nog niet in gebruik. Hierin wordt een String aangemaakt die we zouden 
+kunnen bebruiken om aan de laadpaal de gebruikersnaam en wachtwoord op te vragen.
 
 *******************/
 char* askloader(){
