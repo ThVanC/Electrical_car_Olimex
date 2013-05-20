@@ -7,6 +7,11 @@
 #include <stdio.h>
 #include "pin_config.h"
 
+/******************
+
+hier wordt de thread die de drive logica en de laadlogica implementeert gemanaged. Er wordt tussen laden, rijden en wachten geswitched.
+
+******************/
 void *routine(void* arg){
 	int oude_soc;
 	printf("De routine is begonnen\n");

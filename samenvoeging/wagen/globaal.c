@@ -1,6 +1,12 @@
 #ifndef GLOBAAL_C
 #define GLOBAAL_C
 #include "globaal.h"
+
+/**************************
+
+Globale constanten instellen.
+
+**************************/
 void init_connection(){
 	upperhost="192.168.2.2";//.231
 	paalnummer=3;

@@ -11,7 +11,11 @@
 
 #define MARGE               0.99 	// Marge-factor
 
+/*******************
 
+Het oplaadalgoritme voor de lipo batterij zit hier geimplementeerd.
+
+*******************/
 int charge_LiPo(battery* spec, int socLoad){
 	// Definitie van variabelen
 	int k;

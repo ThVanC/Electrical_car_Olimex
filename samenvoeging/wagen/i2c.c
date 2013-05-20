@@ -6,7 +6,11 @@
 #include <linux/i2c-dev.h>
 #include "i2c.h"
 
+/*******************************
 
+initialiseren van het I2C device in de wagen.
+
+*******************************/
 void i2c_init(char* device){
         // TODO: testen en/of aanpassen!
         // Open het I2C device 
@@ -17,6 +21,11 @@ void i2c_init(char* device){
         }*/	
 }
 
+/*******************************
+
+Dat uitlezen mbv I2C.
+
+*******************************/
 void i2c_read_data(unsigned char* addr, unsigned char* data, int length){
        /* if(ioctl(deviceDescriptor,I2C_SLAVE, addr))
 		printf("I2cReadData_device : IOCTL Problem");
@@ -26,6 +35,11 @@ void i2c_read_data(unsigned char* addr, unsigned char* data, int length){
 	*data=0;
 }
 
+/*******************************
+
+Data schrijven mbv I2C.
+
+*******************************/
 void i2c_write_data(unsigned char addr, unsigned char* data, int length){
         /*if(ioctl(deviceDescriptor,I2C_SLAVE, addr))
 		printf("I2cSendData_device : IOCTL Problem");
@@ -35,6 +49,11 @@ void i2c_write_data(unsigned char addr, unsigned char* data, int length){
 	*data=0;
 }
 
+/*******************************
+
+Temperatuur uitlezen bij de thermometer. 
+
+*******************************/
 // Wrapper functie: gaat ervan uit dat i2c_init al is opgeroepen
 void i2c_read_temp(unsigned char* msbyte, unsigned char* lsbyte){
         /*unsigned char data[2];
@@ -47,6 +66,11 @@ void i2c_read_temp(unsigned char* msbyte, unsigned char* lsbyte){
 	printf("de i2c_read_temp werd opgeroepen \n");
 }
 
+/*******************************
+
+Een waarde gaan wegschrijven bij de DAC.
+
+*******************************/
 // Wrapper functie: deel spanning op in twee bytes om door te geven aan DAC
 void i2c_write_DAC(int voltage){
         /*unsigned char data[3];
@@ -64,6 +88,11 @@ void i2c_write_DAC(int voltage){
 	printf("de i2c_write_DAC werd opgeroepen \n");
 }
 
+/*******************************
+
+De DAC gaan afzetten.
+
+*******************************/
 // Wrapper functie: zet stroom op nul en schakel DAC uit
 void i2c_shutdown_DAC(){
         /*unsigned char data[3];

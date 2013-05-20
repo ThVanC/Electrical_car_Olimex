@@ -10,6 +10,11 @@
 pthread_mutex_t connection = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t emergency = PTHREAD_MUTEX_INITIALIZER;
 
+/*******************
+
+De waarden in controleer_car gaan initialiseren.
+
+*******************/
 void initCar(){
 	voltage=0;			//De spanning over de batterij uitgedrukt in mV
 	current=0;			//De gemetenstroom
@@ -22,6 +27,11 @@ void initCar(){
 	emergencyStart();
 }
 
+/*******************
+
+De batterij specificatie gaan instellen.
+
+*******************/
 void initBatterySpecs(int nr_of_cells, int volt_max_cell, int volt_min_cell, int capacity){
     specs.capacity = capacity;
     specs.nr_of_cells = nr_of_cells;
@@ -29,33 +39,76 @@ void initBatterySpecs(int nr_of_cells, int volt_max_cell, int volt_min_cell, int
     specs.volt_min_cell = volt_min_cell;
 }
 
+/*******************
+
+De huidige spanning over de batterij opvragen.
+
+*******************/
 int getVoltage(){
 	return voltage;
 }
+
+/*******************
+
+De huidige spanning over de batterij gaan instellen.
+
+*******************/
 void setVoltage(int i){
 	voltage=i;
 }
 
+
+/*******************
+
+De stroom die NU in/uit de batterij loop gaan opvragen.
+
+*******************/
 int getCurrent(){
     return current;
 }
 
+
+/*******************
+
+De stroom die NU in/uit de batterij loop gaan instellen.
+
+*******************/
 void setCurrent(int i){
     current = i;
 }
 
+/*******************
+
+De temperatuur van de batterij gaan opvragen.
+
+*******************/
 int getTemperature(){
 	return temperature;
 }
 
+/*******************
+
+De maximale temperatuur die de batterij mag hebben gaan instellen.
+
+*******************/
 int getMaxTemperature(){
 	return max_temp;
 }
 
+/*******************
+
+De load factor gaan opvragen.
+
+*******************/
 int getLoadFactor(){
 	return load;
 }
 
+/*******************
+
+De load factor gaan instellen.
+
+*******************/
 void setLoadFactor(int factor){
 	printf("@try to set loadFactor\n");
 	int i;
@@ -67,10 +120,20 @@ void setLoadFactor(int factor){
 	printf("@test %i\n",i);
 }
 
+/*******************
+
+De SOC gaan opvragen.
+
+*******************/
 int getStateOfCharge(){
 	return state_of_charge;
 }
 
+/*******************
+
+De SOC gaan instellen.
+
+*******************/
 void setStateOfCharge(int i){
 	state_of_charge=i;
 }

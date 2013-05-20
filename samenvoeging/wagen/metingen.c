@@ -14,6 +14,12 @@
 #define TEMP_FRAC 125
 
 #ifndef TEST
+
+/*******************
+
+Het initialiseren van alle testcomponenten + de tijd van het bordje beginnen bijhouden. Dit gaat belangrijk zijn voor het bepalen van de soc. De LRADC's worden geinitialiseerd. De logica zit in adc.c
+
+*******************/
 int initMeasurements(){
 	struct timeval tv;
 	gettimeofday(&tv, NULL);
@@ -24,6 +30,12 @@ int initMeasurements(){
 	//klopt het dat we voor i�c niets moeten initialiseren
 }
 
+/*******************
+
+De spanning over de batterij uitlezen. Deze ga je moeten halen uit de aparte adc. (16 mei: deze is nog niet geplaatst!! Vraag aan de begeleiders wat je moet doen!)
+Deze werd oorspronkelijk uit LRADC1 gelezen, maar nu moet je die uit een ADC halen mbv I²C.
+
+*******************/
 int measureV(){
 	int V_LRADC1,V_bat;//spanningen in mV
 
@@ -33,9 +45,13 @@ int measureV(){
 	return V_bat;
 }
 
-// Bereken de stroom
-// Positief is naar de batterij
-// negatief weg van de batterij
+/*******************
+
+Bereken de stroom
+Positief is naar de batterij
+Negatief weg van de batterij
+
+*******************/
 int measureI(){
 	int V_LRADC0,V_Hall;//spanningen in mV
 	int curr;//stromen in mA
@@ -63,8 +79,13 @@ int measureI(){
 	}
 }
 
+/*******************
 
-/*int measureT(){
+De temperatuur uit de sensor meten. Deze moet mbv i2c bediend worden.
+
+*******************/
+int measureT(){
+/*
     unsigned char msbyte, lsbyte;
     int raw_temp;
     i2c_read_temp(&msbyte, &lsbyte);
@@ -80,10 +101,16 @@ int measureI(){
         // 11e bit is 0 => positieve temperatuur
         return (raw_temp)*TEMP_FRAC;
     }
+	*/
 
-}*/
+}
 #endif
 
+/*******************
+
+State of charge aanpassen op basis van de tijd tussen 2 metingen en de stroom die er op dat ogenblik gemeten wordt. De stroom wordt met de hallsensor bepaald.
+
+*******************/
 int calculateStateofCharge(int* oldSoC, unsigned long *prevTime){
 
 	// Definieer variabelen
@@ -141,6 +168,9 @@ int calculateStateofCharge(int* oldSoC, unsigned long *prevTime){
 	return newStateofCharge;
 }
 
+/*************
+Deze functie past de waarde van de metingen in de controllercar.h aan
+**************/
 void manageMeasurements(){
 	setVoltage(measureV());
 	setCurrent(measureI());
@@ -151,6 +181,9 @@ void manageStateOfCharge(){
 	state_of_charge = calculateStateofCharge(&sum, &now);
 }
 
+/*******************
+Hier gaan we de metingen beheren
+********************/
 
 void measurementsThr(){
 	int i;

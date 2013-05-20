@@ -219,7 +219,11 @@ int convertCurrent(){
 }
 
 
+/******************
+
 // Update de SoC
+
+******************/
 void updateStateofCharge(){
 	// Bereken SoC
     int soc = getStateOfCharge();
@@ -229,7 +233,12 @@ void updateStateofCharge(){
 }
 
 
+/******************
+
 // Controleer of de batterij aan zijn limiet is
+
+******************/
+
 int isAtChargeLimit(int load){
 	if(getStateOfCharge() < load) return 0;
 	else return 1;
@@ -269,7 +278,7 @@ char* getBatterijType(){
 
 /*******************
 
-Uitvoeren van het algoritme dat bij de batterij hoort.
+Hier gaan we de batterij opladen. afhankelijk van het type batterij gaan we hiervoor een andere funcite oproepen
 
 *******************/
 void chargeAlgorithm(){
@@ -285,6 +294,11 @@ void chargeAlgorithm(){
 	}
 }
 
+/*********************
+
+Hier gaan we de batterij ontladen.
+
+**********************/
 void dischargeAlgorthm(){
 	while(getLoadFactor() < 0 && getStateOfCharge() > (specs.volt_max_cell*specs.nr_of_cells)*MINMARGE){
 		setLEDS(-1*getLoadFactor());

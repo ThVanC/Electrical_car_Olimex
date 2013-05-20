@@ -9,7 +9,11 @@
 #define MINIMALE_SNELHEID 0
 #define MAXIMALE_SNELHEID 20
 
-//hier moeten de periode, de (in)active en de periode deler nog aangepast worden.
+/**************************
+
+hier moeten de periode, de (in)active en de periode deler nog aangepast worden.
+
+***************************/
 
 int initDrive(){
 	// Change the function of the processor pins
@@ -32,12 +36,24 @@ int initDrive(){
 	printf("rijden klaar \n");
 }
 
+/**************************
+
+Stel de servo in op forward. De periode is 20 ms en het signaal moet 1.5ms hoog staan.
+
+***************************/
+
 int moveForward(){
 	clrLCD6();
 	setLCD7();
 	clrLCD8();
 	clrLCD9();
 }
+
+/**************************
+
+Stel de servo in op 90° left. De periode is 20 ms en het signaal moet 1ms hoog staan.
+
+***************************/
 
 int moveLeft(){
 	setLCD6();
@@ -46,12 +62,25 @@ int moveLeft(){
 	clrLCD9();
 }
 
+/**************************
+
+Stel de servo in op 90° right. De periode is 20 ms en het signaal moet 2ms hoog staan.
+
+***************************/
+
 int moveRight(){
 	clrLCD6();
 	clrLCD7();
 	clrLCD8();
 	setLCD9();
 }
+
+/**************************
+
+Stel de snelheid hier in. 
+De ESC werkt aan een frequentie van 50Hz. Wederom signaal tussen de 1ms (stilstaan) en 2 ms (plank gas!) instellen.
+
+***************************/
 
 int speed(int s){
 	int par1 = (int)(MINIMALE_SNELHEID), par2 = (int)( MAXIMALE_SNELHEID/4), par3 = (int) ((MAXIMALE_SNELHEID/2)), par4= (int)((3*MAXIMALE_SNELHEID/4));

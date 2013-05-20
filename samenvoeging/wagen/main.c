@@ -6,6 +6,15 @@
 #include <semaphore.h>
 #include "client.h"
 void *cardriver();
+
+/*******************
+
+De main functie. Deze gaat verschillende thread oproepen. We hebben er 3:
+Voor de metingen uit te voeren.
+Voor de client uit te voeren.
+Voor de lader aan te sturen en te rijden.
+
+*******************/
 int main(){
 	pthread_t thr;
 	printf("main1\n");
@@ -18,18 +27,25 @@ int main(){
 	routine((void*)5);
 }
 
+
+/************************
+ deze functie zorgt ervoor dat de cardriver functie gedurende i
+ microseconden niet meer werkt maar dat de metingen wel not worden
+**************************/
 void sleepmain(int i){
-	/*
-	 * deze functie zorgt ervoor dat de cardriver functie gedurende i
-	 * microseconden niet meer werkt maar dat de metingen wel not worden
-	 */
 	while(i>0){
 		i=i-1000000;
 		measurementsThr();
 		usleep(1000000);
 	}
 }
+
+/**************************
+In deze functie gaan we eerst de autobestuurder emuleren en er voor zorgen
+dat er tussendoor metingen worden uitgevoerd.
+**************************/
 void *cardriver(){
+	initMeasurements();
 	while(1){
 		printf("begin van de while#\n");
 		if(getLoadFactor()!=0){
