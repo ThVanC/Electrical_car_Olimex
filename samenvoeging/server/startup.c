@@ -18,6 +18,10 @@
 #include "startup.h"
 #include "globaal.h"
 
+/************************
+In deze functie gaan we connectie maken met een server. Hiervoor stellen we onze eigen poort in, 
+de poort van de server waarmee we gaan connecteren en het IP-adres van de server (dit mag ook de naam vd server zijn)
+*************************/
 struct arg startClient(int eigenpoort, int anderepoort, char* host){
 	struct arg terug;
 	struct addrinfo hints1, *hints2, hints, *info;
@@ -54,6 +58,10 @@ struct arg startClient(int eigenpoort, int anderepoort, char* host){
 	return terug;
 }
 
+/*************************************
+Met deze functie gaan we op poort eigenpoort een poort openzetten waarmee hosts (laadpalen) kunnen connecteren.
+Het is hierbij nodig om ook ons eigen IP adres op te geven.
+**************************************/
 struct arg startServer(int eigenpoort, char* host_hier){
 	struct arg terug;
 	char* nummer=malloc(6*sizeof(char));//langer dan 6 tekens kan een poortnummer niet zijn
@@ -84,6 +92,12 @@ struct arg startServer(int eigenpoort, char* host_hier){
 	return terug;
 }
 
+/*************************************
+In deze funcite gaan we kijken of een device ons 
+een bericht stuurt gedurende een bepaalde tijdspanne.
+Indien dit het geval is is de returnwaarde 1, 
+in het andere geval is de returnwaarde nul.
+**************************************/
 int isReadyToRead(int _socketHandle, const long lWaitTimeMicroseconds)
 {
     int iSelectReturn = 0;  // Number of sockets meeting the criteria given to select()

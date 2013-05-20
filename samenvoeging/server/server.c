@@ -23,6 +23,11 @@
 struct addrinfo server_hints;
 int serversocket;
 
+/***************************
+In deze functie is een vast commando geprogrammeerd dat altijd 
+hetzelfde JSON commando teruggeeft om naar de client op te sturen, 
+enkel de snelheid waaraan de client moet opladen variëert.
+****************************/
 char* giveJSON(){
 	char* terug=(char*)malloc(500*sizeof(char));
 	char * string1 = malloc(2000*sizeof(char));	
@@ -46,12 +51,18 @@ char* giveJSON(){
 	return  terug;
 }
 
+
+/**************************************
+In deze funcie bepalen we wat we naar de client gaan terugsturen.
+***************************************/
 char* SetVariables(char* buffer){
 	return giveJSON();
 }
 
 
-
+/*************************************
+In deze functie verzorgen we de communicatie met één client.
+*************************************/
 void *doeiets(void* erin){
 	struct arg input=*((struct arg *)erin);
 	int error, open=1; 
@@ -76,7 +87,9 @@ void *doeiets(void* erin){
 
 
 
-
+/***********************************
+Hiermee starten we de server op.
+***********************************/
 int main(){ 
 	struct arg *argument=malloc(sizeof argument);
 	struct arg tijdelijk;

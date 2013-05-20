@@ -21,8 +21,11 @@
 #include "laadpaal.h"
 #include "start_wifi.h"
 
-
-
+/***************************
+In deze functie is een vast commando geprogrammeerd dat altijd 
+hetzelfde JSON commando teruggeeft om naar de client op te sturen, 
+enkel de snelheid waaraan de client moet opladen variëert.
+****************************/
 char* giveJSON(){
 	char* terug=(char*)malloc(500*sizeof(char));
 	char * string1 = "{\"load\" : \"15\"}";	
@@ -46,7 +49,9 @@ char* giveJSON(){
 }
 
 
-
+/*************************************
+Deze functie behandelt 1 wagen dat aan het laden is.
+*************************************/
 void *doeiets(void* erin){
 	struct arg input=*((struct arg *)erin);
 	int error, socket2; 
@@ -95,7 +100,9 @@ void *doeiets(void* erin){
 
 
 
-
+/************************
+Hiermee starten we de laadpaal op.
+************************/
 int main(){ 
 	struct arg *argument=malloc(sizeof argument);
 	int error, socket2, useport;

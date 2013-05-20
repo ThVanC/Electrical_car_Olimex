@@ -92,6 +92,12 @@ struct arg startServer(int eigenpoort, char* host_hier){
 	return terug;
 }
 
+/*************************************
+In deze funcite gaan we kijken of een device ons 
+een bericht stuurt gedurende een bepaalde tijdspanne.
+Indien dit het geval is is de returnwaarde 1, 
+in het andere geval is de returnwaarde nul.
+**************************************/
 int isReadyToRead(int _socketHandle, const long lWaitTimeMicroseconds)
 {
     int iSelectReturn = 0;  // Number of sockets meeting the criteria given to select()

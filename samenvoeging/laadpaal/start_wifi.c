@@ -2,6 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include "globaal.h"
+
+/***********************
+
+De wifi connectie opzetten.
+
+***********************/
 char* startWifi(){
 	char value[2];
 	int master;
