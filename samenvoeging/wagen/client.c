@@ -17,7 +17,14 @@
 #include "globaal.h"
 #include "start_wifi.h"
 #include "controller_car.h"
+
 int socket1;
+
+/*******************
+
+JSON object maken als antwoord op de vraag
+
+*******************/
 json_object* SetVariables(char* buffer){
 	char* string=(char*)malloc(tekstlengte*sizeof(char));
 	json_object* jobj=json_object_new_array();
@@ -74,7 +81,11 @@ json_object* SetVariables(char* buffer){
 	return jobj;
 }
 
+/*******************
 
+Connectie maken met de laadpaal
+
+*******************/
 int clientConnect(){
 	struct addrinfo hints1, hints, *info;
 	int error, connection, nieuwepoort, open=1;
@@ -121,10 +132,20 @@ int clientConnect(){
 
 }
 
+/*******************
+
+Socket sluiten
+
+*******************/
 void closeSocket(){
 	shutdown(socket1, SHUT_RDWR);
 }
 
+/*******************
+
+Deze functie geeft het IP adres terug uit een JSON String
+
+*******************/
 char* giveHost(char* buffer){
 	char* host=malloc(IPLengte*sizeof(char));
 	json_object* jobj=json_tokener_parse(buffer);
@@ -133,6 +154,13 @@ char* giveHost(char* buffer){
 	host[strlen(json_object_to_json_string(val))-2]='\0';
 	return host;
 }
+
+/*******************
+
+Deze functie is nog niet in gebruik. Hierin wordt een String aangemaakt die we zouden 
+kunnen bebruiken om aan de laadpaal de gebruikersnaam en wachtwoord op te vragen.
+
+*******************/
 char* askloader(){
 	char* terug=(char*)malloc(500*sizeof(char));
 
@@ -150,6 +178,12 @@ char* askloader(){
 	sprintf(terug,"%s\n",json_object_to_json_string(jarray));
 	return  terug;
 }
+
+/************************
+
+De main functie voor de client thread.
+
+************************/
 int *client_thr(){
 	init_connection();
 	while(1){
