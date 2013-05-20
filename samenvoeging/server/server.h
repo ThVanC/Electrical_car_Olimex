@@ -1,5 +1,6 @@
 #ifndef SERVER_H
 #define SERVER_H
+
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,10 +15,13 @@
 #include <stdio.h>
 #include "startup.h"
 #include "globaal.h"
+
+int load;
+int maxload;
+
 int main();
 json_object* vraagWaarden();
 json_object* geefWaarden();
 void *setLoadSpeed();
-int load;
-int maxload;
+
 #endif
