@@ -1,6 +1,6 @@
 #ifndef GLOBAAL_H
 #define GLOBAAL_H
-void init();
+
 char* upperhost;
 int paalnummer;
 int poort;
@@ -13,4 +13,7 @@ int max_laadpalen;
 char* prefix;
 int IPLengte;
 char* me;
+
+void init();
+
 #endif
